@@ -10,8 +10,8 @@ import java.util.*;
 public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     DisplayInformation di;
     double age;
-    Location hole;
-
+    Burrow myBurrow;
+    Location location;
     //Konstruktør
     public Rabbit() {
         age = 0;
@@ -48,15 +48,19 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             l = list.get(randomLocation);
             world.move(this, l);
 
-        } if (list.size() <= 0) {
+        }
+        if (list.size() <= 0) {
             System.out.println("No moveable spots available, i'll stand still.");
         }
-
     }
 
-    public void Older(World world){
-        if (world.getCurrentTime() == 19){
-            age = age + 0.5;
+    //Græs-spisning
+    public void eat(World world) {
+       // if(world.);
+        //if (world.getLocation(this) == world.getLocation(wo)){
+
         }
     }
 }
+
+
