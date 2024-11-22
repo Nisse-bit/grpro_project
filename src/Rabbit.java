@@ -11,12 +11,13 @@ import java.util.*;
 public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     DisplayInformation di;
     double age;
-    Burrow myBurrow;
+    Burrow myburrow;
     Location location;
+
     //Konstruktør
     public Rabbit() {
         age = 0;
-        burrow = null;
+        myburrow = null;
         di = new DisplayInformation(Color.gray, "rabbit-small", false);
     }
 
@@ -28,19 +29,20 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
     @Override
     public void act(World world) {
-        if (world.getCurrentTime()%10 == 0|| world.getCurrentTime()%11 == 0 || world.getCurrentTime()%12 == 0 ) {
-
+        if (world.getCurrentTime() % 10 == 0 || world.getCurrentTime() % 11 == 0 || world.getCurrentTime() % 12 == 0) {
+                // move nearest burrow.
         } else {
             // når det ikke er "after" bevæger den sig tilfældigt.
             this.move(world);
         }
 
-
+        this.tryToEat(world)
         this.older(world);
     }
+
     //Rabbit bliver ældre & skifter udseende.
     public void older(World world) {
-        if (world.getCurrentTime()%10 == 0) {
+        if (world.getCurrentTime() % 10 == 0) {
             age = age + 0.5;
         }
         if (age >= 1.5 && age <= 2.5) {
@@ -77,67 +79,83 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     //Græs-spisning
-    public void eat(World world) {
-       // if(world.);
-        //if (world.getLocation(this) == world.getLocation(wo)){
-
+    private void tryToEat(World world){
+        Location l = world.getLocation(this);
+        if(world.containsNonBlocking(l)){
+            Object o = world.getNonBlocking(l);
+            if(o instanceof Grass){
+                int r = new Random().nextInt(2); //Genererer en int, enten 0 eller 1
+                if(r==0){world.delete(o);} //50% sandsynlighed for at spise
+            }
         }
     }
 
+
+
     //Grav et hul
-    public void Digburrow(World world){
+    public void Digburrow(World world) {
         Location l = world.getLocation(this);
-        if(!world.containsNonBlocking(l)){
+        if (!world.containsNonBlocking(l)) {
             world.setTile(l, new Burrow());
         }
     }
 
     public void MovenearestBurrow(World world) {
-             Set<Location> tileSet = world.getSurroundingTiles(this.location,2); // radius af tiles rundt om her 25 felter i alt.
+        Set<Location> tileSet = world.getSurroundingTiles(this.location, 2); // radius af tiles rundt om her 25 felter i alt.
+        Location l = this.location;
+        for (Location loc : tileSet) {
+            // Skal finde tættest Burrow.
 
-             for(Location loc : tileSet ){
-                 // Skal finde tættest Burrow.
+            // placeholder location til at huske den tættest location.
 
-                 // placeholder location til at huske den tættest location.
+            Location Closestloc = new Location(0, 0);
 
-                 Location Closestloc = new Location(0,0);
+            if (world.getNonBlocking(loc) instanceof Burrow) {
+                // her skal vi sammenligne rabbit og burrows location.
+                // location fra tileset some indeholders burrows Location.
+                int x = loc.getX();
+                int y = loc.getY();
 
-                 if(world.getNonBlocking(loc) instanceof Burrow){
-                     // her skal vi sammenligne rabbit og burrows location.
-                     // location fra tileset some indeholders burrows Location.
-                   int x = loc.getX();
-                   int y = loc.getY();
+                // Rabbit locations
+                int Ry = this.location.getX();
+                int Rx = this.location.getX();
 
-                   // Rabbit locations
-                   int Ry = this.location.getX();
-                   int Rx = this.location.getX();
+                if (x == Rx || y == Ry) { // middle Rabbit already in a hole standing on a hole;
 
-                   if (x == Rx || y == Ry) { // middle Rabbit already in a hole standing on a hole;
-
-                       if (x > Rx || y > Ry ) {} // top right
-                       if (x < Rx || y > Ry ) {} // top left
-                       if (x == Rx || y > Ry ) {} // top middle
-                       if (x > Rx || y == Ry ) {} //  center right,
-                       if (x < Rx || y == Ry ) {} // center left,
-                       if (x > Rx || y < Ry ) {} // bottom right
-                       if (x < Rx || y < Ry ) {} // bottom left
-                       if (x == Rx || y < Ry ) {}  // bottom middle
-                   }
-             }
-         }
+                    if (x > Rx || y > Ry) {
+                    } // top right
+                    if (x < Rx || y > Ry) {
+                    } // top left
+                    if (x == Rx || y > Ry) {
+                    } // top middle
+                    if (x > Rx || y == Ry) {
+                    } //  center right,
+                    if (x < Rx || y == Ry) {
+                    } // center left,
+                    if (x > Rx || y < Ry) {
+                    } // bottom right
+                    if (x < Rx || y < Ry) {
+                    } // bottom left
+                    if (x == Rx || y < Ry) {
+                    }  // bottom middle
+                }
+            }
+        }
 
     }
 
     public boolean hasBurrow() {
-        if (burrow != null)
-        {return true;}
-        else
-        {return false;}
+        if (myburrow != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public double getAge() {
         return age;
     }
+
 }
 
 

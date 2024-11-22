@@ -1,55 +1,54 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.Scanner;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.List;
+import java.util.ArrayList;
 
 public class FileReader {
-    private File file; //input-filen vi ønsker at læse fra
-    private int worldSize; //første linje i filen, verdenens størrelse
-    private HashMap<String, Integer> entityMap; //Map over entities der skal skabes (key), samt hvor mange (value)
-    private List<Object> entityList;
-    private List<Object> nboList;
+    private File file; //Input-filen vi ønsker at læse fra
+    private int worldSize; //Første linje i filen, verdenens størrelse
+    private Map<String, Integer> entityMap; //Map over entities der skal skabes (key), samt hvor mange (value)
+    private List<Object> entityList; //List til at opbevare blocking entities
+    private List<Object> nboList; //List til at opbevare nonblocking entities
 
     //Konstruktør
     public FileReader(String fileLocation) throws FileNotFoundException {
         this.file = new File(fileLocation);
-        Scanner scanner = new Scanner(file); //Scanner til at læse fra filen
+        Scanner scanner = new Scanner(file);
 
         this.worldSize = Integer.parseInt(scanner.nextLine());
         this.entityMap = new HashMap<>();
 
-        while (scanner.hasNextLine()) {
+        while(scanner.hasNextLine()){
             String line = scanner.nextLine();
             String[] splitline = line.split(" ");
-            if(splitline.length == 1){return;}
-            // ^^Nogle linjer i input-filerne er tomme
+            if(splitline.length == 1){return;} //Nogle filer indeholder tomme linjer
 
             String entityName = splitline[0];
             int entityAmount;
 
-            if (splitline[1].contains("-")) {
+            if(splitline[1].contains("-")){
                 int min = Integer.parseInt(splitline[1].split("-")[0]);
-                int max = Integer.parseInt(splitline[1].split("-")[1]);
-                entityAmount = new Random().nextInt(min, max);
-            } else {
+                int max = Integer.parseInt(splitline[1].split("-")[1]) + 1;
+                entityAmount = new Random().nextInt(min,max);
+            }
+            else{
                 entityAmount = Integer.parseInt(splitline[1]);
             }
 
             entityMap.put(entityName, entityAmount);
         }
+
+        this.makeLists();
     }
 
-    //Metoder
-    //printInfo
-    public void printInfo() {
-        System.out.println("Worldsize: " + worldSize);
-        for (String entity : entityMap.keySet()) {
-            System.out.println("Entity: " + entity + ", amount: " + entityMap.get(entity));
-        }
-        System.out.println();
-    }
-    //makeEntityList
-    private void makeEntityList(){
+    //makeLists
+    private void makeLists(){
         this.entityList = new ArrayList<>();
+        this.nboList = new ArrayList<>();
         for(String key : entityMap.keySet()){
             //rabbits
             if(key.equalsIgnoreCase("rabbit")){
@@ -58,20 +57,6 @@ public class FileReader {
                     entityList.add(new Rabbit());
                 }
             }
-        }
-    }
-    //getEntityList
-    public List<Object> getEntityList(){
-        if(entityList == null){
-            this.makeEntityList();
-        }
-        return entityList;
-    }
-
-    //makeNboList
-    private void makeNboList(){
-        this.nboList = new ArrayList<>();
-        for(String key : entityMap.keySet()){
             //grass
             if(key.equalsIgnoreCase("grass")){
                 int amount = entityMap.get(key);
@@ -88,42 +73,56 @@ public class FileReader {
             }
         }
     }
+
+    //getEntityList
+    public List<Object> getEntityList(){
+        if(entityList == null){this.makeLists();}
+        return entityList;
+    }
+    //getEntityAmount
+    public int getEntityAmount(){
+        int sum = 0;
+        for(Object o : this.getEntityList()){
+            sum += 1;
+        }
+        return sum;
+    }
+
     //getNboList
     public List<Object> getNboList(){
-        if(nboList == null){
-            this.makeNboList();
-        }
+        if(entityList == null){this.makeLists();}
         return nboList;
     }
-    
+    //getNBOAmount
+    public int getNBOAmount(){
+        int sum = 0;
+        for(Object o : this.getNboList()){
+            sum += 1;
+        }
+        return sum;
+    }
+
+    //getEntityMap
+    public Map<String,Integer> getEntityMap(){
+        return entityMap;
+    }
+
     //getFile
     public File getFile() {
         return file;
     }
 
-    //getWorldSize returnerer størrelsen af verden. som er første linje i input filen.
-    public int getWorldSize() {
+    //getWorldSize
+    public int getWorldSize(){
         return worldSize;
     }
 
-    //get SumEntity
-    public int getEntityAmount(){
-        int sum = 0;
-        for (Object a : entityList){
-           sum++;
+    //printInfo
+    public void printInfo(){
+        System.out.println("Worldsize: "+ worldSize);
+        for(String entity : entityMap.keySet()){
+            System.out.println("Entity: "+ entity +", amount: "+ entityMap.get(entity));
         }
-        return sum;
-    }
-    //get SumNBO
-    public int getNBOAmount(){
-        int sum = 0;
-        for (Object a : nboList){
-            sum++;
-        }
-        return sum;
-    }
-    //getEntityMap   Returnere Hashmap med, String type af object og integer mængden den skal lave af dem.
-    public HashMap<String, Integer> getEntityMap() {
-        return entityMap;
+        System.out.println();
     }
 }
