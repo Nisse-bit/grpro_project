@@ -1,6 +1,7 @@
 import itumulator.executable.DisplayInformation;
 import itumulator.world.NonBlocking;
-import itumulator.world.*;
+import itumulator.world.Location;
+import itumulator.world.World;
 
 import java.util.*;
 
@@ -13,13 +14,27 @@ public class Grass implements NonBlocking, DynamicDisplayInformationProvider{
     Location grassLocation;
     // skal græs have en amount eller skal vi lade dem genere i world.
 
-
     public Grass() {
         di = new DisplayInformation(Color.green, "grass", true);
     }
 
     @Override public DisplayInformation getInformation(){
         return di;
+    }
+
+    public void spread2(World world){
+        //Tjek om omkringliggende felter er non-blocking
+        List<Location> surroundingTilesWithoutNBO;
+        surroundingTilesWithoutNBO = new LinkedList<>();
+        for(Location l : world.getSurroundingTiles(world.getLocation(this))){
+            if(!world.containsNonBlocking(l)) {
+                surroundingTilesWithoutNBO.add(l);
+            }
+        }
+        if(surroundingTilesWithoutNBO.isEmpty()) {return;}
+        //Hvis surroundingTilesWithoutNBO IKKE er tom, spred til et tilfældigt omkringliggende felt
+            //Implementér sandsynlighed for spredning
+            //...
     }
 
     public void spread(World world) {
@@ -50,13 +65,11 @@ public class Grass implements NonBlocking, DynamicDisplayInformationProvider{
                         world.setTile(location, grass);
                     }
                 }
-                
-
-
-
             }
         }
-
+    }
+    public void kill(World world){
+        world.delete(this);
     }
 
 }

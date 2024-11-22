@@ -7,6 +7,7 @@ public class FileReader {
     private int worldSize; //første linje i filen, verdenens størrelse
     private HashMap<String, Integer> entityMap; //Map over entities der skal skabes (key), samt hvor mange (value)
     private List<Object> entityList;
+    private List<Object> nboList;
 
     //Konstruktør
     public FileReader(String fileLocation) throws FileNotFoundException {
@@ -35,29 +36,10 @@ public class FileReader {
 
             entityMap.put(entityName, entityAmount);
         }
-
-        this.entityList = new LinkedList<>();
-        //Laver entityMap om til en liste med objekter der skal placeres
-        for (String key : entityMap.keySet()) {
-            if(key.equals("rabbit")) {
-                for(int i=0; i<=entityMap.get(key); i++){
-                    entityList.add(new Rabbit());
-                }
-            }
-            if(key.equals("grass")) {
-                for(int i=0; i<=entityMap.get(key); i++){
-                    entityList.add(new Grass());
-                }
-            }
-            if(key.equals("burrow")) {
-                for(int i=0; i<=entityMap.get(key); i++){
-                    entityList.add(new Burrow());
-                }
-            }
-        }
     }
 
     //Metoder
+    //printInfo
     public void printInfo() {
         System.out.println("Worldsize: " + worldSize);
         for (String entity : entityMap.keySet()) {
@@ -65,17 +47,81 @@ public class FileReader {
         }
         System.out.println();
     }
+    //makeEntityList
+    private void makeEntityList(){
+        this.entityList = new ArrayList<>();
+        for(String key : entityMap.keySet()){
+            //rabbits
+            if(key.equalsIgnoreCase("rabbit")){
+                int amount = entityMap.get(key);
+                for(int i=amount; i-- >0;){
+                    entityList.add(new Rabbit());
+                }
+            }
+        }
+    }
+    //getEntityList
+    public List<Object> getEntityList(){
+        if(entityList == null){
+            this.makeEntityList();
+        }
+        return entityList;
+    }
 
+    //makeNboList
+    private void makeNboList(){
+        this.nboList = new ArrayList<>();
+        for(String key : entityMap.keySet()){
+            //grass
+            if(key.equalsIgnoreCase("grass")){
+                int amount = entityMap.get(key);
+                for(int i=amount; i-- >0;){
+                    nboList.add(new Grass());
+                }
+            }
+            //burrow
+            if(key.equalsIgnoreCase("burrow")){
+                int amount = entityMap.get(key);
+                for(int i=amount; i-- >0;){
+                    nboList.add(new Burrow());
+                }
+            }
+        }
+    }
+    //getNboList
+    public List<Object> getNboList(){
+        if(nboList == null){
+            this.makeNboList();
+        }
+        return nboList;
+    }
+    
     //getFile
     public File getFile() {
         return file;
     }
 
-    //getWorldSize Returnere størrelsen af verden. som er første linje i input filen.
+    //getWorldSize returnerer størrelsen af verden. som er første linje i input filen.
     public int getWorldSize() {
         return worldSize;
     }
 
+    //get SumEntity
+    public int getEntityAmount(){
+        int sum = 0;
+        for (Object a : entityList){
+           sum++;
+        }
+        return sum;
+    }
+    //get SumNBO
+    public int getNBOAmount(){
+        int sum = 0;
+        for (Object a : nboList){
+            sum++;
+        }
+        return sum;
+    }
     //getEntityMap   Returnere Hashmap med, String type af object og integer mængden den skal lave af dem.
     public HashMap<String, Integer> getEntityMap() {
         return entityMap;

@@ -1,18 +1,11 @@
-import java.awt.Color;
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.*;
-import java.util.Random;
-
-import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
 
+import java.io.FileNotFoundException;
+import java.util.Random;
+
 public class Main {
-    // Filereader map, med Type som String/Key og integer som
-    FileReader fReader;
-    HashMap<String,Integer> EntityMap = fReader.getEntityMap();
     public static void main(String[] args) throws FileNotFoundException {
         FileReader fReader = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\week-1\\t1-1c.txt");
 
@@ -70,7 +63,5 @@ public class Main {
         }
 
         p.show();
-
-
     }
 }
