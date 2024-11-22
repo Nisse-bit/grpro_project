@@ -30,7 +30,18 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     @Override
     public void act(World world) {
         if (world.getCurrentTime() % 10 == 0 || world.getCurrentTime() % 11 == 0 || world.getCurrentTime() % 12 == 0) {
-            // move nearest burrow.
+
+            // hvis burrow ikke er null bevæg sig mod sit eget burrow.
+            if (hasBurrow()) {
+                this.moveto(world,myburrow.getLocation(world));
+            } else {
+                // hvis der er et tæt på burrow gør den det til sit eget.
+                this.myburrow = Nearestburrow(world);
+                // bevæger sig til sit nye myburrows lokation
+                if(this.myburrow != null) {moveto(world, myburrow.getLocation(world));}
+
+
+            }
         } else {
             // når det ikke er "after" bevæger den sig tilfældigt.
             this.move(world);
@@ -56,7 +67,10 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
     }
 
-    // Bevægelses logik
+    /**
+     * bevæger sig tilfældigt i den iskolde verden.
+     * @param world
+     */
     public void move(World world) {
         //Move Rabbit
         Set<Location> neighbours = world.getEmptySurroundingTiles();
@@ -94,10 +108,10 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
 
     public boolean hasBurrow() {
-        if (myburrow != null) {
-            return true;
-        } else {
+        if (myburrow == null) {
             return false;
+        }   else {
+            return true;
         }
     }
 
@@ -114,7 +128,11 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
     }
 
-    // move to location
+    /**
+     * bevæger sig til specefikt givet lokation.
+     * @param world
+     * @param loc
+     */
     public void moveto(World world, Location loc) {
 
 
@@ -127,7 +145,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         int Rx = world.getLocation(this).getX();
             if (x == Rx && y ==  Ry) {
                 System.out.println("you are already at the location doofus");
-                // use hide function,.
+                // use hide function hvis der er et burrow og det er nat
                 return;
             }
 
@@ -160,16 +178,16 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             } else {
                 System.out.println("der er noget i vejen jeg kan ikke komme til mit hul");
             }
-        } else if (x < Rx && y > Ry) {      // hvis Locationens x er stø rre og y er mindre end kaninens XY.
-            Rx = Rx + 1;
-            Ry = Ry - 1;
+        } else if (x < Rx && y > Ry) {      // hvis Locationens x er større og y er mindre end kaninens XY.
+            Rx = Rx - 1;
+            Ry = Ry + 1;
             Location locationX = new Location(Rx, Ry);
             if (world.isTileEmpty(locationX)) {
                 world.move(this, locationX);
             } else {
                 System.out.println("der er noget i vejen jeg kan ikke komme til mit hul");
             }
-        } else if (x > Rx) {      // hvis Locationens x er større og y er mindre end kaninens XY.
+        } else if (x > Rx) {      // hvis Locationens x er større
             Rx = Rx + 1;  // en til højre
 
             Location locationX = new Location(Rx, Ry);
@@ -178,7 +196,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             } else {
                 System.out.println("der er noget i vejen jeg kan ikke komme til mit hul");
             }
-        } else if (x < Rx) {      // hvis Locationens x er større og y er mindre end kaninens XY.
+        } else if (x < Rx) {      // hvis Locationens x er mindre
             Rx = Rx - 1;  // en til venstre
 
             Location locationX = new Location(Rx, Ry);
@@ -187,7 +205,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             } else {
                 System.out.println("der er noget i vejen jeg kan ikke komme til mit hul");
             }
-        } else if (y > Ry) {      // hvis Locationens x er større og y er mindre end kaninens XY.
+        } else if (y > Ry) {      // hvis Locationens y er større
             Ry = Ry + 1;  // en op
 
             Location locationX = new Location(Rx, Ry);
@@ -196,8 +214,8 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             } else {
                 System.out.println("der er noget i vejen jeg kan ikke komme til mit hul");
             }
-        } else if (y < Ry) {      // hvis Locationens x er større og y er mindre end kaninens XY.
-            Ry = Ry - 1;  // en ned
+        } else if (y < Ry) {       // hvis Locationens y er mindre
+                Ry = Ry - 1;  // en ned
 
             Location locationX = new Location(Rx, Ry);
             if (world.isTileEmpty(locationX)) {
@@ -208,9 +226,52 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
 
     }
+
+    /**
+     *
+     * @param world
+     * @return
+     */
+    public Burrow Nearestburrow(World world) {  // ULTRA MEGA HUKOMMElSES TUNGT, find en bedre løsning på et tidspunkt
+        // den retnere ret ofte et null
+        // den her skal kigges mere på.
+        // man kunne istedet for at retunere
+        // sætte this.myburrow == burrow
+        Set<Location> FirstRingofTiles = world.getSurroundingTiles();
+
+        for (Location location : FirstRingofTiles) {
+            if(world.containsNonBlocking(location)) {
+
+                Object object = world.getNonBlocking(location);
+                if (object instanceof Burrow) {
+                    return (Burrow) object;
+                }
+            }
+        }
+        Set<Location> SecondRingofTiles = world.getSurroundingTiles(2);
+        for (Location location : FirstRingofTiles) {
+            if(world.containsNonBlocking(location)) {
+
+                Object object = world.getNonBlocking(location);
+                if (object instanceof Burrow) {
+                    return (Burrow) object;
+                }
+            }
+        }
+        Set<Location> ThirdRingofTiles = world.getSurroundingTiles(3);
+        for (Location location : FirstRingofTiles) {
+            if(world.containsNonBlocking(location)) {
+
+                Object object = world.getNonBlocking(location);
+                if (object instanceof Burrow) {
+                    return (Burrow) object;
+                }
+            }
+        }
+
+        return null;
+    }
 }
-
-
 
 
 

@@ -22,6 +22,18 @@ public class Burrow implements DynamicDisplayInformationProvider{
         return di;
     }
 
+    /**
+     * hvis et hul har en rabbit eller flere, returner hullets lokation.
+     * @param world
+     * @return this burrows location
+     */
+    public Location getLocation(World world){
+        if(associatedRabbits.isEmpty()){
+            return null;
+        } else {
+            return world.getLocation(this);
+        }
+    }
 
     //Metoder til associates-listen
     public void addRabbit(Rabbit rabbit){

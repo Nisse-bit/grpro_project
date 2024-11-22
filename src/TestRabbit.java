@@ -117,7 +117,7 @@ public class TestRabbit {
 
     @Test
     public void RabbitMoveto() {
-       // her tester vi om kaninen kan gå til højre flere gange.
+
         w = new World(7);
 
 
@@ -125,9 +125,8 @@ public class TestRabbit {
         Location rabbitlocation = new Location(4, 4);
         w.setTile(rabbitlocation, rabbit);
 
-
-
-        Location location1 = new Location(6, 4);  // x < Rx  || y == y dvs den er under kaninen
+        // her tester vi om kaninen kan gå til højre flere gange.
+        Location location1 = new Location(6, 4);
 
         rabbit.moveto(w,location1);
 
@@ -151,8 +150,8 @@ public class TestRabbit {
 
 
 
-        // her tester vi om rabbit kan gå til Venstre
-        Location location1 = new Location(4, 5);   // x < Rx  || y == y dvs den er til højre for kaninen
+        // her tester vi om rabbit kan gå til Venstre EN enkelt gang
+        Location location1 = new Location(3, 4);
 
         rabbit.moveto(w,location1);
 
@@ -175,7 +174,7 @@ public class TestRabbit {
         // hvad hvis kaninen ikke starter i midten?
         // den kan bevæge sig flere gange.
 
-        Location location1 = new Location(4, 6);   // x < Rx  || y == y dvs den er til højre for kaninen
+        Location location1 = new Location(4, 6);
 
         rabbit.moveto(w,location1);
 
@@ -199,7 +198,7 @@ public class TestRabbit {
         // hvad hvis kaninen ikke starter i midten?
         // den kan bevæge sig flere gange.
 
-        Location location1 = new Location(2, 4);   // x < Rx  || y == y dvs den er til højre for kaninen
+        Location location1 = new Location(4, 2);
 
         rabbit.moveto(w,location1);
 
@@ -223,7 +222,7 @@ public class TestRabbit {
         // hvad hvis kaninen ikke starter i midten?
         // den kan bevæge sig flere gange.
 
-        Location location1 = new Location(4,2 );   // x < Rx  || y == y dvs den er til højre for kaninen
+        Location location1 = new Location(6,2 );
 
         rabbit.moveto(w,location1);
 
@@ -236,17 +235,17 @@ public class TestRabbit {
     @Test
     public void RabbitMoveto5() {
         // her tester vi om rabbit kan gå til højre
-        w = new World(7);
+        w = new World(9);
 
+        // her hjalp testen mig til at finde fejl i koden tak <3.
 
 
         Location rabbitlocation = new Location(4, 4);
         w.setTile(rabbitlocation, rabbit);
-        // kaninen starter i midten
-        // hvad hvis kaninen ikke starter i midten?
+
         // den kan bevæge sig flere gange.
 
-        Location location1 = new Location(2,2 );   // x < Rx  || y == y dvs den er til højre for kaninen
+        Location location1 = new Location(2,6 );
 
         rabbit.moveto(w,location1);
 
@@ -259,18 +258,18 @@ public class TestRabbit {
 
     @Test
     public void RabbitMoveto6() {
-        // her tester vi om rabbit kan gå til højre
+        // her tester vi om rabbit kan gå til venstre og ned
+
         w = new World(7);
 
 
 
         Location rabbitlocation = new Location(4, 4);
         w.setTile(rabbitlocation, rabbit);
-        // kaninen starter i midten
-        // hvad hvis kaninen ikke starter i midten?
-        // den kan bevæge sig flere gange.
 
-        Location location1 = new Location(2,2 );   // x < Rx  || y == y dvs den er til højre for kaninen
+        // den kan bevæge sig en gang
+
+        Location location1 = new Location(3,3 );
 
         rabbit.moveto(w,location1);
 
@@ -282,18 +281,17 @@ public class TestRabbit {
     }
     @Test
     public void RabbitMoveto7() {
-        // her tester vi om rabbit kan gå til højre
+        // her tester vi om rabbit kan gå til højre og op.
         w = new World(7);
 
 
 
         Location rabbitlocation = new Location(4, 4);
         w.setTile(rabbitlocation, rabbit);
-        // kaninen starter i midten
-        // hvad hvis kaninen ikke starter i midten?
+
         // den kan bevæge sig flere gange.
 
-        Location location1 = new Location(6,6); // x < Rx  || y == y dvs den er til højre for kaninen
+        Location location1 = new Location(6,6);
 
         rabbit.moveto(w,location1);
 
@@ -318,7 +316,7 @@ public class TestRabbit {
         // hvad hvis kaninen ikke starter i midten?
         // den kan bevæge sig flere gange.
 
-        Location location1 = new Location(6,6); // x < Rx  || y == y dvs den er til højre for kaninen
+        Location location1 = new Location(2,2);
 
         rabbit.moveto(w,location1);
 
