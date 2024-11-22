@@ -14,30 +14,35 @@ public class Grass implements Actor, NonBlocking, DynamicDisplayInformationProvi
 
     //Konstruktør
     public Grass() {
-        di = new DisplayInformation(Color.green,"grass",true);
+        di = new DisplayInformation(Color.green, "grass", true);
     }
 
     //Metoder
-    @Override public DisplayInformation getInformation(){
+    @Override
+    public DisplayInformation getInformation() {
         return di;
     }
 
-    @Override public void act(World world){
+    @Override
+    public void act(World world) {
         tryToSpread(world);
     }
 
-    public void tryToSpread(World world){
+    public void tryToSpread(World world) {
         List<Location> surroundingAvailableNonBlockingTiles = new ArrayList(); //Opretter en liste til tilgængelige felter
-        for(Location l : world.getSurroundingTiles(world.getLocation(this))){ //Fylder listen...
-            if(!world.containsNonBlocking(l)){ //... med de tiles som ikke indeholder NBO'er
+        for (Location l : world.getSurroundingTiles(world.getLocation(this))) { //Fylder listen...
+            if (!world.containsNonBlocking(l)) { //... med de tiles som ikke indeholder NBO'er
                 surroundingAvailableNonBlockingTiles.add(l);
             }
         }
-        if(surroundingAvailableNonBlockingTiles.isEmpty()){return;} //Hvis der er ingen ledige pladser, stop
+        if (surroundingAvailableNonBlockingTiles.isEmpty()) {
+            return;
+        } //Hvis der er ingen ledige pladser, stop
 
-        if(new Random().nextInt(0,50) == 42){ //2% chance for at sprede sig
-            int r = new Random().nextInt(0,surroundingAvailableNonBlockingTiles.size()); //Vælger tilfældigt index
+        if (new Random().nextInt(0, 50) == 42) { //2% chance for at sprede sig
+            int r = new Random().nextInt(0, surroundingAvailableNonBlockingTiles.size()); //Vælger tilfældigt index
             Location l = surroundingAvailableNonBlockingTiles.get(r); //Gemmer lokationen med indexnummer r
             world.setTile(l, new Grass()); //Sætter nyt græs
         }
     }
+}

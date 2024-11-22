@@ -1,5 +1,8 @@
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.executable.DisplayInformation;
+import itumulator.world.Location;  // til PutBurrow metode
+import itumulator.world.World;
+
 import java.awt.Color;
 import java.util.List;
 import java.util.LinkedList;
@@ -14,14 +17,23 @@ public class Burrow implements DynamicDisplayInformationProvider{
         associatedRabbits = new LinkedList<>();
     }
 
-    //Metoder
+    //Metoder return DisplayInformation
     @Override public DisplayInformation getInformation(){
         return di;
     }
+
 
     //Metoder til associates-listen
     public void addRabbit(Rabbit rabbit){
         associatedRabbits.add(rabbit);
     }
     public List<Rabbit> getAssociates(){return associatedRabbits;}
+
+    // Lavet så niels kan putte burrows i test
+    public void PutBurrow(World world, Location location) {
+        if (world.getNonBlocking(location) != null) {
+            world.setTile(location, new Burrow());
+        }
+
+    }
 }

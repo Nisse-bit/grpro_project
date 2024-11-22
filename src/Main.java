@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
-        FileReader fReader = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\week-1\\t1-1c.txt");
+        FileReader fReader = new FileReader("C:\\Users\\niels\\Documents\\GitHub\\grpro_project\\src\\week-1\\t1-2cde.txt");
 
         //----------- World Setup --------
         int size = fReader.getWorldSize();
@@ -62,6 +62,10 @@ public class Main {
             }
         }
 
+
+
         p.show();
     }
+
+
 }
