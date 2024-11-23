@@ -15,6 +15,12 @@ public class FileReader {
     private List<Object> nboList; //List til at opbevare nonblocking entities
 
     //Konstruktør
+    /**
+     * Konstruktøren laver en FileReader, som dertil laver et HashMap over "Entity" og amount.
+     * Konstruktøren laver gemmer også en int worldSize fra første linje i læste fil.
+     * @param fileLocation i string form.
+     * @throws FileNotFoundException
+     */
     public FileReader(String fileLocation) throws FileNotFoundException {
         this.file = new File(fileLocation);
         Scanner scanner = new Scanner(file);
@@ -46,6 +52,9 @@ public class FileReader {
     }
 
     //makeLists
+    /**
+     * Denne metode laver 2 lister af objekter. 1 Liste af NBO-Objekter & 1 Liste af Actors.
+     */
     private void makeLists(){
         this.entityList = new ArrayList<>();
         this.nboList = new ArrayList<>();
@@ -80,6 +89,10 @@ public class FileReader {
         return entityList;
     }
     //getEntityAmount
+    /**
+     * En simpel metode der returnere summen af objekter i EntityListen
+     * @return int sum
+     */
     public int getEntityAmount(){
         int sum = 0;
         for(Object o : this.getEntityList()){
@@ -93,7 +106,12 @@ public class FileReader {
         if(entityList == null){this.makeLists();}
         return nboList;
     }
+
     //getNBOAmount
+    /**
+     * En simpel metode der returnere summen af objekter i NBOListen
+     * @return int sum
+    */
     public int getNBOAmount(){
         int sum = 0;
         for(Object o : this.getNboList()){
@@ -118,6 +136,9 @@ public class FileReader {
     }
 
     //printInfo
+    /**
+    * En simpel metode primært brugt til debugging af FileReader konstruktøren.
+    */
     public void printInfo(){
         System.out.println("Worldsize: "+ worldSize);
         for(String entity : entityMap.keySet()){

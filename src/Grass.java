@@ -28,6 +28,11 @@ public class Grass implements Actor, NonBlocking, DynamicDisplayInformationProvi
         tryToSpread(world);
     }
 
+    //Spread
+    /**
+     * Metoden kaldes på et græs-objekt, og får objekterne til at prøve at sprede sig.
+     * @param world
+     */
     public void tryToSpread(World world) {
         List<Location> surroundingAvailableNonBlockingTiles = new ArrayList(); //Opretter en liste til tilgængelige felter
         for (Location l : world.getSurroundingTiles(world.getLocation(this))) { //Fylder listen...

@@ -91,7 +91,10 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             System.out.println("No moveable spots available, i'll stand still.");
         }
     }
-
+    /**
+     * Rabbit prøver at spise græs, hvis den står på det.
+     * @param world
+     */
     //Græs-spisning
     private void tryToEat(World world) {
         Location l = world.getLocation(this);
@@ -129,7 +132,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * bevæger sig til specefikt givet lokation.
+     * bevæger sig til specifikt givet lokation.
      * @param world
      * @param loc
      */
@@ -230,7 +233,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     /**
      *
      * @param world
-     * @return
+     * @return Burrows i nærheden af kaninen eller null hvis ingen er tilstede
      */
     public Burrow Nearestburrow(World world) {  // ULTRA MEGA HUKOMMElSES TUNGT, find en bedre løsning på et tidspunkt
         // den retnere ret ofte et null
