@@ -6,6 +6,7 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import itumulator.world.Location;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -336,14 +337,14 @@ public class TestRabbit {
 
         Location rabbitlocation = new Location(4, 4);
         // kaninen starter i midten
-        // hvad hvis kaninen ikke starter i midten?
 
 
-        Location location = new Location(2, 4);   // x < Rx  && y == y dvs den er under kaninen
-        // sætter burrow ved location
 
-        burrow.PutBurrow(w,location);
+        Location location = new Location(3, 4);   // x < Rx  && y == y dvs den er under kaninen
+        // sætter burrow ved location 3,4
 
+
+        w.setTile(location, burrow);
 
         w.setCurrentLocation(location);
         System.out.println(w.getNonBlocking(location));
@@ -359,10 +360,14 @@ public class TestRabbit {
 
         // nu skal kaninen gå i mod burrow.
         // det burde den gøre
+        Assertions.assertNotNull(burrow);
 
         rabbit.act(w);
+        System.out.println("Rabbit Location after first act: " + w.getLocation(rabbit));
+        // her burde rabbit bevæge sig imod hullet, men den gør det ikke, fsome reason. selvom act bliver kørt på den.
 
         rabbit.act(w);
+        System.out.println("Rabbit Location after second act: " + w.getLocation(rabbit));
 
         System.out.println(w.getLocation(rabbit));
 

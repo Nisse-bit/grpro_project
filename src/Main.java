@@ -11,7 +11,7 @@ public class Main {
 
         //----------- World Setup --------
         int size = fReader.getWorldSize();
-        int delay = 75;
+        int delay = 100;
         int display_size = 800;
         Program p = new Program(size, display_size, delay);
         World w = p.getWorld();

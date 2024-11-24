@@ -1,13 +1,14 @@
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;  // til PutBurrow metode
+import itumulator.world.NonBlocking;
 import itumulator.world.World;
 
 import java.awt.Color;
 import java.util.List;
 import java.util.LinkedList;
 
-public class Burrow implements DynamicDisplayInformationProvider{
+public class Burrow implements DynamicDisplayInformationProvider, NonBlocking {
     private DisplayInformation di;
     private List<Rabbit> associatedRabbits;
 
@@ -22,18 +23,7 @@ public class Burrow implements DynamicDisplayInformationProvider{
         return di;
     }
 
-    /**
-     * hvis et hul har en rabbit eller flere, returner hullets lokation.
-     * @param world
-     * @return this burrows location
-     */
-    public Location getLocation(World world){
-        if(associatedRabbits.isEmpty()){
-            return null;
-        } else {
-            return world.getLocation(this);
-        }
-    }
+
 
     //Metoder til associates-listen
     public void addRabbit(Rabbit rabbit){

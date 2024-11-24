@@ -17,12 +17,14 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     private Location location;
     private String sex;
     private boolean hasBredToday;
+    private boolean isHidden;
 
     //Konstruktør
     public Rabbit() {
         di = new DisplayInformation(Color.gray, "rabbit-small", false);
         age = 0;
         myburrow = null;
+        isHidden = false;
 
         int r = new Random().nextInt(2);
         if(r == 0) {sex = "male";}
@@ -38,18 +40,25 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
     @Override
     public void act(World world) {
+        if(hide(world)) {
+            return;
+        }
+        // kaniner bliver ældre.
         this.older(world);
+        //if(world.getLocation(this) == null) {return;} // hvis den ikke er på mappet må den ikke stadig bevæge sig. overflødig virker med den under?
         if(!world.contains(this)){return;} //Hvis kaninen døde i forrige metode, stop act
 
-        if (world.getCurrentTime() % 10 == 0 || world.getCurrentTime() % 11 == 0 || world.getCurrentTime() % 12 == 0) {
+        if (world.getCurrentTime() % 10 == 0 || world.getCurrentTime() % 11 == 0 || world.getCurrentTime() % 12 == 0 || world.getCurrentTime() % 13 == 0 || world.getCurrentTime() % 14 == 0 || world.getCurrentTime() % 15 == 0) {
             // hvis burrow ikke er null bevæg sig mod sit eget burrow.
-            if (hasBurrow()) {
-                this.moveto(world,myburrow.getLocation(world));
+            if (hasBurrow()) {  // hvis den har et burrow gå imod burrow.
+                this.moveto(world,world.getLocation(myburrow));
             } else {
                 // hvis der er et tæt på burrow gør den det til sit eget.
                 this.myburrow = Nearestburrow(world);
                 // bevæger sig til sit nye myburrows lokation
-                if(this.myburrow != null) {moveto(world, myburrow.getLocation(world));}
+
+                                                                //
+                if(this.myburrow != null) {moveto(world, world.getLocation(myburrow));}
             }
         } else {
             // når det ikke er "after" bevæger den sig tilfældigt.
@@ -239,48 +248,29 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
+     * Kigger, alle kanines surrounding felter efter et burrow, skal kun afvikles hvis der kanines burrow er null.
+     *
      * @param world
      * @return Burrows i nærheden af kaninen eller null hvis ingen er tilstede
      */
     public Burrow Nearestburrow(World world) {
-        // ULTRA MEGA HUKOMMElSES TUNGT, find en bedre løsning på et tidspunkt
-        // den retnere ret ofte et null
-        // den her skal kigges mere på.
-        // man kunne istedet for at retunere
-        // sætte this.myburrow == burrow
-        Set<Location> FirstRingofTiles = world.getSurroundingTiles();
-
-        for (Location location : FirstRingofTiles) {
-            if(world.containsNonBlocking(location)) {
-
-                Object object = world.getNonBlocking(location);
-                if (object instanceof Burrow) {
-                    return (Burrow) object;
+        int searchRadius = 1; // tætteste ring
+        while (searchRadius <= 3) { // op til tre ringe af tiles.
+            Set<Location> surroundingTiles = world.getSurroundingTiles(searchRadius);
+            for (Location location : surroundingTiles) {
+                if (world.containsNonBlocking(location)) {
+                    Object object = world.getNonBlocking(location);
+                    if (object instanceof Burrow) { // hvis det er burrow.
+                        System.out.println("Burrow found at: " + location);
+                        return (Burrow) object;
+                    }
                 }
             }
-        }
-        Set<Location> SecondRingofTiles = world.getSurroundingTiles(2);
-        for (Location location : FirstRingofTiles) {
-            if(world.containsNonBlocking(location)) {
-
-                Object object = world.getNonBlocking(location);
-                if (object instanceof Burrow) {
-                    return (Burrow) object;
-                }
-            }
-        }
-        Set<Location> ThirdRingofTiles = world.getSurroundingTiles(3);
-        for (Location location : FirstRingofTiles) {
-            if(world.containsNonBlocking(location)) {
-
-                Object object = world.getNonBlocking(location);
-                if (object instanceof Burrow) {
-                    return (Burrow) object;
-                }
-            }
+            searchRadius++; // øger radius
         }
 
-        return null;
+        System.out.println("No burrow found within 3 rings.");
+        return null; // hvis der ikke er en der er tæt.
     }
 
     /**
@@ -318,5 +308,22 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             this.hasBredToday = true; //Kaninen stoppes fra at parre mere i dag
             partner.hasBredToday = true; //Partneren stoppes fra at parre mere i dag
         }
+    }
+
+    /**
+     * Hvis kaninen står på sit burrow om natten hopper den i. Eller den er i sit burrow om dagen, så hopper den ud.
+     * @param world
+     */
+    private boolean hide(World world){
+        if (world.isNight() && myburrow != null){
+            if(world.getLocation(myburrow) == world.getLocation(this)){
+                world.remove(this);
+                return true;
+            }
+        }
+        if (world.isDay()) {
+            return false;
+        }
+        return false;
     }
 }
