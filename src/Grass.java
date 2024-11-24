@@ -34,7 +34,7 @@ public class Grass implements Actor, NonBlocking, DynamicDisplayInformationProvi
      * @param world
      */
     public void tryToSpread(World world) {
-        List<Location> surroundingAvailableNonBlockingTiles = new ArrayList(); //Opretter en liste til tilgængelige felter
+        List<Location> surroundingAvailableNonBlockingTiles = new ArrayList<>(); //Opretter en liste til tilgængelige felter
         for (Location l : world.getSurroundingTiles(world.getLocation(this))) { //Fylder listen...
             if (!world.containsNonBlocking(l)) { //... med de tiles som ikke indeholder NBO'er
                 surroundingAvailableNonBlockingTiles.add(l);

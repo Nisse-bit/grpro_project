@@ -327,6 +327,10 @@ public class TestRabbit {
         Assertions.assertEquals(location1, w.getLocation(rabbit));
 
     }
+
+
+    // Den her tester om kaniner, går imod locationer og også gemmer sig i dem.
+    @Test
     public void RabbitMovesNearestBurrow() {    // work in progress
         w = new World(6);
 
@@ -335,14 +339,34 @@ public class TestRabbit {
         // hvad hvis kaninen ikke starter i midten?
 
 
-        Location location = new Location(2, 4);   // x < Rx  || y == y dvs den er under kaninen
+        Location location = new Location(2, 4);   // x < Rx  && y == y dvs den er under kaninen
+        // sætter burrow ved location
+
         burrow.PutBurrow(w,location);
 
 
-        Location location1 = new Location(0, 0);
-        Location location2 = new Location(0, 0);
-        Location location3 = new Location(0, 0);
+        w.setCurrentLocation(location);
+        System.out.println(w.getNonBlocking(location));
 
+
+        // step i simulationen så tiden bliver 10 11 eller 12. Sådan så rabbit går imod burrow.
+        for (int i = 0; i < 11 ; i++) {  w.step();}
+
+        // putter kaninen ned.
+        w.setTile(rabbitlocation, rabbit);
+
+        System.out.println(w.getCurrentTime());
+
+        // nu skal kaninen gå i mod burrow.
+        // det burde den gøre
+
+        rabbit.act(w);
+
+        rabbit.act(w);
+
+        System.out.println(w.getLocation(rabbit));
+
+        Assertions.assertEquals(location, w.getLocation(rabbit));
     }
 
 

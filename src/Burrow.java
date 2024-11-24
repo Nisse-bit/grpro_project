@@ -43,7 +43,7 @@ public class Burrow implements DynamicDisplayInformationProvider{
 
     // Lavet så niels kan putte burrows i test
     public void PutBurrow(World world, Location location) {
-        if (world.getNonBlocking(location) != null) {
+        if (world.getNonBlocking(location) == null) {
             world.setTile(location, new Burrow());
         }
 
