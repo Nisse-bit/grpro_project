@@ -1,24 +1,33 @@
+import itumulator.executable.DynamicDisplayInformationProvider;
+import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 
-import itumulator.executable.DynamicDisplayInformationProvider;
-import itumulator.executable.DisplayInformation;
-
 import java.awt.Color;
-import java.util.*;
+import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Rabbit implements Actor, DynamicDisplayInformationProvider {
-    DisplayInformation di;
-    double age;
-    Burrow myburrow;
-    Location location;
+    private DisplayInformation di;
+    private int age;
+    private Burrow myburrow;
+    private Location location;
+    private String sex;
+    private boolean hasBredToday;
 
     //Konstruktør
     public Rabbit() {
+        di = new DisplayInformation(Color.gray, "rabbit-small", false);
         age = 0;
         myburrow = null;
-        di = new DisplayInformation(Color.gray, "rabbit-small", false);
+
+        int r = new Random().nextInt(2);
+        if(r == 0) {sex = "male";}
+        if(r == 1) {sex = "female";}
+        hasBredToday = false;
     }
 
     //Metoder
@@ -29,8 +38,10 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
     @Override
     public void act(World world) {
-        if (world.getCurrentTime() % 10 == 0 || world.getCurrentTime() % 11 == 0 || world.getCurrentTime() % 12 == 0) {
+        this.older(world);
+        if(!world.contains(this)){return;} //Hvis kaninen døde i forrige metode, stop act
 
+        if (world.getCurrentTime() % 10 == 0 || world.getCurrentTime() % 11 == 0 || world.getCurrentTime() % 12 == 0) {
             // hvis burrow ikke er null bevæg sig mod sit eget burrow.
             if (hasBurrow()) {
                 this.moveto(world,myburrow.getLocation(world));
@@ -39,40 +50,39 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
                 this.myburrow = Nearestburrow(world);
                 // bevæger sig til sit nye myburrows lokation
                 if(this.myburrow != null) {moveto(world, myburrow.getLocation(world));}
-
-
             }
         } else {
             // når det ikke er "after" bevæger den sig tilfældigt.
             this.move(world);
         }
-
         this.tryToEat(world);
-        this.older(world);
+        this.tryToBreed(world);
     }
 
-    //Rabbit bliver ældre & skifter udseende.
-    public void older(World world) {
-        if (world.getCurrentTime() % 10 == 0) {
-            age = age + 0.5;
+    /**
+     * Kaninen ældes og skifter udseende
+     * @param world
+     */
+    private void older(World world) {
+        //Bliver ældre
+        age++;
+        //Opdaterer udseende
+        if(age == 30){
+            di = new DisplayInformation(Color.darkGray, "rabbit-large", true);
         }
-        if (age >= 1.5 && age <= 2.5) {
-            di = new DisplayInformation(Color.DARK_GRAY, "rabbit-large", false);
+        if(age == 60){
+            di = new DisplayInformation(Color.black,"rabbit-large-fungi",true);
         }
-        if (age >= 3 && age <= 4) {
-            di = new DisplayInformation(Color.black, "rabbit-large-fungi", false);
-        }
-        if (age > 4) {
+        if(age == 90){
             world.delete(this);
         }
     }
 
     /**
-     * bevæger sig tilfældigt i den iskolde verden.
+     * Kaninen bevæger sig tilfældigt i den iskolde verden
      * @param world
      */
     public void move(World world) {
-        //Move Rabbit
         Set<Location> neighbours = world.getEmptySurroundingTiles();
         List<Location> list = new ArrayList<>(neighbours);
 
@@ -91,39 +101,38 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             System.out.println("No moveable spots available, i'll stand still.");
         }
     }
+
     /**
-     * Rabbit prøver at spise græs, hvis den står på det.
+     * Kaninen prøver at spise græs, hvis den står på det
      * @param world
      */
-    //Græs-spisning
     private void tryToEat(World world) {
+        if(world.isNight()){return;} //Kaninen spiser kun om dagen
+
         Location l = world.getLocation(this);
         if (world.containsNonBlocking(l)) {
-            Object o = world.getNonBlocking(l);
-            if (o instanceof Grass) {
+            if (world.getNonBlocking(l) instanceof Grass g) {
                 int r = new Random().nextInt(2); //Genererer en int, enten 0 eller 1
-                if (r == 0) {
-                    world.delete(o);
-                } //50% sandsynlighed for at spise
+                if (r == 0) { //50% sandsynlighed for at spise
+                    world.delete(g);
+                }
             }
         }
     }
 
-
+    /**
+     * Returnerer hvorvidt kaninen er tilknyttet en hule
+     * @return true hvis kaninen er tilknyttet en hule, ellers false
+     */
     public boolean hasBurrow() {
-        if (myburrow == null) {
-            return false;
-        }   else {
-            return true;
-        }
+        if(myburrow == null) {return false;}
+        else {return true;}
     }
 
     public double getAge() {
         return age;
     }
 
-
-    //Grav et hul
     public void Digburrow(World world) {
         Location l = world.getLocation(this);
         if (!world.containsNonBlocking(l)) {
@@ -137,7 +146,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      * @param loc
      */
     public void moveto(World world, Location loc) {
-
 
         // place to move to
         int x = loc.getX();
@@ -231,11 +239,11 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     *
      * @param world
      * @return Burrows i nærheden af kaninen eller null hvis ingen er tilstede
      */
-    public Burrow Nearestburrow(World world) {  // ULTRA MEGA HUKOMMElSES TUNGT, find en bedre løsning på et tidspunkt
+    public Burrow Nearestburrow(World world) {
+        // ULTRA MEGA HUKOMMElSES TUNGT, find en bedre løsning på et tidspunkt
         // den retnere ret ofte et null
         // den her skal kigges mere på.
         // man kunne istedet for at retunere
@@ -274,8 +282,41 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
         return null;
     }
+
+    /**
+     * Kaninen forsøger at parre sig med en tilfældig, nær, modsat-kønnet kanin
+     * @param world
+     */
+    private void tryToBreed(World world){
+        if(age < 30){return;} //Hvis kaninen ikke er fuldvoksen, stop metoden
+
+        if(world.getCurrentTime()%20 == 0){hasBredToday = false;} //Hvis det er en ny dag, nulstil hasBredToday
+        if(hasBredToday){return;} //Hvis kaninen har parret i dag, stop metoden
+
+        List<Location> tilesForBaby = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
+        if(tilesForBaby.isEmpty()){return;} //Hvis der ikke er plads til at få en unge, stop metoden
+
+        List<Rabbit> surroundingPartners = new ArrayList<>(); //Liste af omkringliggende potentielle partnere
+        for(Location l : world.getSurroundingTiles(world.getLocation(this))){
+            if(world.getTile(l) instanceof Rabbit p){
+                if(this.sex.equals("male") && p.sex.equals("female")){surroundingPartners.add(p);}
+                if(this.sex.equals("female") && p.sex.equals("male")){surroundingPartners.add(p);}
+            }
+        }
+        if(surroundingPartners.isEmpty()){return;} //Hvis der ikke er mindst én potentiel partner, stop metoden
+
+        Random random = new Random();
+        int rand1 = random.nextInt(100); //Sandsynlighed for at parre, for nu bare 100% for testing purposes
+        if(rand1 < 100){
+            int rand2 = random.nextInt(surroundingPartners.size());
+            Rabbit partner = surroundingPartners.get(rand2); //Vælger en tilfældig partner
+
+            int rand3 = random.nextInt(tilesForBaby.size());
+            Location l = tilesForBaby.get(rand3); //Vælger tilfældig lokation til ungen
+            world.setTile(l, new Rabbit()); //Sætter ungen i verden
+
+            this.hasBredToday = true; //Kaninen stoppes fra at parre mere i dag
+            partner.hasBredToday = true; //Partneren stoppes fra at parre mere i dag
+        }
+    }
 }
-
-
-
-
