@@ -8,77 +8,34 @@ import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Rabbit implements Actor, DynamicDisplayInformationProvider {
-    private DisplayInformation di;
-    private int age;
-    private String sex;
-    private boolean hasBredToday;
+public class Rabbit extends Animal{
     private Burrow burrow;
-    private boolean inBurrow;
-    private int[] energy;
-    private boolean dies;
 
-    //Konstruktør
+    //Konstruktør Rabbit
     public Rabbit() {
+        super();
         di = new DisplayInformation(Color.gray,"rabbit-small",true);
-        age = 0;
-        sex = (new Random().nextInt(2) == 0)? "male" : "female";
-        hasBredToday = false;
+        energy = new int[]{50,50};
         burrow = null;
-        inBurrow = false;
-        energy = new int[]{50,50}; //Energi som int-array. Første tal angiver max-energi, andet tal faktisk energi
-        dies = false;
     }
 
     //Metoder
     @Override
-    public DisplayInformation getInformation(){
-        return di;
-    }
-
-    @Override
     public void act(World world) {
         this.older(world);
-        this.advancedMove(world);
+        this.RabbitMove(world);
         this.tryToEat(world);
         this.tryToBreed(world);
 
         if(dies){world.delete(this);}
     }
 
-    /**
-     * Justerer kaninens nuværende energi-niveau. (Kaninens energi er delt i to; max-energi og faktisk/nuværende-energi)
-     * @param world verdenen som kaninen er i
-     * @param value værdien energi-niveauet justeres med
-     */
-    public void adjustEnergy(World world, int value){
-        //Gemmer max- og faktisk energi i variable så koden er nemmere at læse
-        int maximumEnergy = energy[0];
-        int currentEnergy = energy[1];
+    @Override
+    public void tryToBreed(World world) {
+        if(world.getCurrentTime()%20 == 0 ){canBreed = true;} //Hvis det er en ny dag, nulstil hasBredToday
 
-        if(currentEnergy+value > maximumEnergy){
-            //Hvis energien som en metode ønsker at tilføje ville overskrive max-energi...
-            energy[1] = energy[0]; //... sættes faktisk energi lig max-energi, så max aldrig overskrides
-        }
-        else if(currentEnergy+value <= 0){
-            //Hvis energien som en metode ønsker at fjerne resulterer i 0 eller negativ energi...
-            dies = true; //... så dør kaninen
-            System.out.println("["+ this +"] died from hunger");
-        }
-        else{
-            energy[1] += value; //Ellers rettes energien bare
-        }
-    }
-
-    /**
-     * Kaninen forsøger at parre sig med en tilfældig, nær, modsat-kønnet kanin, op til én gang om dagen.
-     * @param world verdenen som kaninen er i
-     */
-    public void tryToBreed(World world){
-        if(world.getCurrentTime()%20 == 0){hasBredToday = false;} //Hvis det er en ny dag, nulstil hasBredToday
-
-        //Hvis kaninen ikke er fuldvoksen, eller den har parret i dag, eller den er i sin hule, stop metoden
-        if(age < 30 || hasBredToday || inBurrow){return;}
+        //Hvis kaninen ikke er fuldvoksen, eller den har parret i dag, stop metoden
+        if(age < 30 || !canBreed){return;}
 
         List<Location> tilesForBaby = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
         if(tilesForBaby.isEmpty()){return;} //Hvis der ikke er plads til at få en unge, stop metoden
@@ -99,22 +56,19 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             Rabbit mate = surroundingPartners.get(rand2); //Vælger en tilfældig partner
 
             int rand3 = random.nextInt(tilesForBaby.size());
-            Location l = tilesForBaby.get(rand3); //Vælger tilfældig lokation til unge
+            Location l = tilesForBaby.get(rand3); //Vælger tilfældig lokation til ungen
             world.setTile(l, new Rabbit()); //Sætter ungen i verden
 
-            this.hasBredToday = true; //Kaninen stoppes fra at parre mere i dag
-            mate.hasBredToday = true; //Partneren stoppes fra at parre mere i dag
+            this.canBreed = false; //Kaninen stoppes fra at parre mere i dag
+            mate.canBreed = false; //Partneren stoppes fra at parre mere i dag
             this.adjustEnergy(world, -1); //Kaninen mister energi
             mate.adjustEnergy(world, -1); //Partneren mister energi
         }
     }
 
-    /**
-     * Kaninen har 75% sandsynlighed at spise græs, hvis den står på det.
-     * @param world verdenen som kaninen er i
-     */
+    @Override
     public void tryToEat(World world){
-        if(world.isNight() || inBurrow){return;} //Kaninen spiser kun om dagen og når den ikke er i sin hule
+        if(world.isNight() || !onMap){return;} //Kaninen spiser kun om dagen og når den ikke er i sin hule
 
         Location l = world.getLocation(this);
         if(world.containsNonBlocking(l)){
@@ -127,10 +81,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
     }
 
-    /**
-     * Kaninen bliver ældre, skifter udseende og justerer max-energi alt efter hvor længe den har været i verdenen.
-     * @param world verdenen som kaninen er i
-     */
+    @Override
     public void older(World world){
         //Bliver ældre
         age++;
@@ -141,7 +92,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             //33% sandsynlighed for at kaninen får 30 max-energi istedet for 40
         }
         if(age == 60){
-            di = new DisplayInformation(Color.black,"rabbit-large-fungi",true);
+            di = new DisplayInformation(Color.black,"rabbit-old",true);
             energy[0] = (new Random().nextInt(2) == 0)? 25 : 10;
             //50% sandsynlighed for at kaninen får 10 max-energi istedet for 25
         }
@@ -152,32 +103,15 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Kaninen bevæger sig tilfældigt i den iskolde verden.
-     * @param world verdenen som kaninen er i
-     */
-    public void moveRandomly(World world){
-        Set<Location> neighbours = world.getEmptySurroundingTiles();
-        List<Location> list = new ArrayList<>(neighbours);
-
-        if (!list.isEmpty()) {
-            int r = new Random().nextInt(list.size());
-            Location l = list.get(r);
-            world.move(this, l);
-            this.adjustEnergy(world, -1); //Kaninen mister energi
-        }
-        /*if(list.size() == 0){System.out.println("["+ this +"]: No moveable spots available, I'll stand still.");}*/
-    }
-
-    /**
      * Kaninen bevæger sig tilfældigt, søger imod sin hule eller gemmer sig, alt efter tiden på døgnet.
      * @param world verdenen som kaninen er i
      */
-    public void advancedMove(World world){
+    public void RabbitMove(World world){
         int time = world.getCurrentTime();
         Random random = new Random();
 
         //Hvis det er morgen, hopper kaninen ud af hulen
-        if(time == 19 && inBurrow){
+        if(time == 19 && !onMap){
             Location bLocation = world.getLocation(burrow);
 
             //Kaninen finder en tilfældig plads at hoppe ud på
@@ -190,27 +124,27 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             }
             Location reappearTile = reappearableTiles.get(random.nextInt(reappearableTiles.size()));
             world.setTile(reappearTile, this);
-            inBurrow = false;
+            onMap = true;
             this.adjustEnergy(world, -1);
             return; //Kaninen hopper ud og stopper metoden så den ikke hopper videre
         }
-        else if(inBurrow){return;} //Hvis kaninen ellers er i sin hule, stoppes metoden
+        else if(!onMap){return;} //Hvis kaninen ellers er i sin hule, stoppes metoden
 
         //Hvis det er aften eller nat, pathfinder kaninen til sin hule
         if(9 <= time && time <= 18){
             Location rLocation = world.getLocation(this);
 
-            //Kaninen finder- eller graver sig et hul:
+            //Hvis kaninen ikke har en hule, finder- eller graver den sig en
             if(burrow == null){
                 burrow = nearestBurrow(world,3); //Hvis kaninen ikke har en hule, forsøger den at finde en
                 if(burrow == null){
-                    //Hvis kaninen ikke fandt en hule, forsøger den at grave en:
+                    //Hvis kaninen ikke fandt en hule, forsøger den at grave en
                     if(!(world.getNonBlocking(rLocation) instanceof NonBlocking)){
                         Burrow b = new Burrow();
                         world.setTile(rLocation, b);
                         burrow = b; //Kaninen graver en hule og tilknytter sig den
                     }
-                    //Hvis kaninen stadig ikke har en hule, finder den nu nærmeste hule i hele verdenen:
+                    //Hvis kaninen stadig ikke har en hule, finder den nu nærmeste hule i hele verdenen
                     if(burrow == null){
                         burrow = nearestBurrow(world, world.getSize());
                     }
@@ -221,7 +155,8 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             //Nu hvor kaninen har en hule, hopper den ned i den hvis den står på den, ellers hopper den imod den
             if(world.getNonBlocking(world.getLocation(this)) == burrow){
                 world.remove(this);
-                inBurrow = true;
+                onMap = false;
+                canBreed = false;
             }
             else{
                 this.moveTowards(world, world.getLocation(burrow));
@@ -230,78 +165,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         else{
             this.moveRandomly(world); //Hvis det ellers er dag, hopper kaninen tilfældigt
         }
-    }
-
-    /**
-     * Kaninen hopper imod en given lokation.
-     * @param world verdenen som kaninen er i
-     * @param location lokationen som kaninen hopper imod
-     */
-    public void moveTowards(World world, Location location) {
-        //Ønskede koordinater
-        int x = location.getX();
-        int y = location.getY();
-
-        //Kaninens koordinater
-        int Ry = world.getLocation(this).getY();
-        int Rx = world.getLocation(this).getX();
-
-        if (x > Rx && y > Ry) { //Hvis lokationens xy er højere end kaninens xy...
-            Rx = Rx + 1;
-            Ry = Ry + 1; //Bevæger sig til diagonalt op til højre
-            Location locationXY = new Location(Rx, Ry);
-            if (world.isTileEmpty(locationXY)) {  //Checker om der står noget på feltet
-                world.move(this, locationXY); //Bevæger kaninen til det nye sted
-            }
-            /*else{System.out.println("["+ this +"] Der er noget i vejen, jeg kan ikke komme til mit hul!");}*/
-        } else if (x < Rx && y < Ry) { //Hvis lokationens xy er mindre end kaninens xy...
-            Rx = Rx - 1;
-            Ry = Ry - 1; //Bevæger sig diagonalt ned til venstre
-            Location locationX = new Location(Rx, Ry);
-            if (world.isTileEmpty(locationX)) {
-                world.move(this, locationX);
-            }
-        } else if (x > Rx && y < Ry) { //Hvis lokationens x er større og y er mindre end kaninens xy...
-            Rx = Rx + 1;
-            Ry = Ry - 1; //Bevæger sig diagonalt ned til højre
-            Location locationX = new Location(Rx, Ry);
-            if (world.isTileEmpty(locationX)) {
-                world.move(this, locationX);
-            }
-        } else if (x < Rx && y > Ry) { //Hvis lokationens x er større og y er mindre end kaninens xy...
-            Rx = Rx - 1;
-            Ry = Ry + 1; //Bevæger sig diagonalt op til venstre
-            Location locationX = new Location(Rx, Ry);
-            if (world.isTileEmpty(locationX)) {
-                world.move(this, locationX);
-            }
-        } else if (x > Rx) { //Hvis lokationens x er større end kaninens x...
-            Rx = Rx + 1;  //Bevæger sig direkte til højre
-            Location locationX = new Location(Rx, Ry);
-            if (world.isTileEmpty(locationX)) {
-                world.move(this, locationX);
-            }
-        } else if (x < Rx) { //Hvis lokationens x er mindre ned kaninens x...
-            Rx = Rx - 1;  //Bevæger sig direkte til venstre
-            Location locationX = new Location(Rx, Ry);
-            if (world.isTileEmpty(locationX)) {
-                world.move(this, locationX);
-            }
-        } else if (y > Ry) { //Hvis lokationens y er større end kaninens y...
-            Ry = Ry + 1;  //Bevæger sig direkte op
-            Location locationX = new Location(Rx, Ry);
-            if (world.isTileEmpty(locationX)) {
-                world.move(this, locationX);
-            }
-        } else if (y < Ry) { //Hvis lokationens y er mindre end kaninens y...
-            Ry = Ry - 1;  //Bevæger sig direkte ned
-            Location locationX = new Location(Rx, Ry);
-            if (world.isTileEmpty(locationX)) {
-                world.move(this, locationX);
-            }
-        }
-
-        this.adjustEnergy(world, -1);
     }
 
     /**
@@ -327,4 +190,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
         return null; //Hvis der ikke er en hule i nærheden returneres null
     }
+
+
 }

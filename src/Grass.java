@@ -30,8 +30,8 @@ public class Grass implements Actor, NonBlocking, DynamicDisplayInformationProvi
 
     //Spread
     /**
-     * Metoden kaldes på et græs-objekt, og får objekterne til at prøve at sprede sig.
-     * @param world
+     * Græsset har 2% sandsynlighed for at sprede sig.
+     * @param world verdenen som græsset er i
      */
     public void tryToSpread(World world) {
         List<Location> surroundingAvailableNonBlockingTiles = new ArrayList<>(); //Opretter en liste til tilgængelige felter

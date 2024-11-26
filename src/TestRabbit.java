@@ -42,9 +42,9 @@ public class TestRabbit {
         Location l = w.getLocation(rabbit);
 
         // tester givne funktion
-        rabbit.move(w);
-        rabbit.move(w);
-        rabbit.move(w);
+        rabbit.moveRandomly(w);
+        rabbit.moveRandomly(w);
+        rabbit.moveRandomly(w);
 
         // hvis at kaninen har bevæget sig vil den ikke være den samme som start positionen som lige nu er (0,0)
         assertNotEquals(l, w.getLocation(rabbit));   // her skal start location være anderledes ind slut position.
@@ -62,7 +62,7 @@ public class TestRabbit {
 
 
         Location l = w.getLocation(rabbit);
-        rabbit.move(w);
+        rabbit.moveRandomly(w);
         Assertions.assertEquals(l, w.getLocation(rabbit));
 
     }
@@ -129,12 +129,12 @@ public class TestRabbit {
         // her tester vi om kaninen kan gå til højre flere gange.
         Location location1 = new Location(6, 4);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
         // virker også hvis den allerede er der.
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
         Assertions.assertEquals(location1, w.getLocation(rabbit));
 
@@ -154,7 +154,7 @@ public class TestRabbit {
         // her tester vi om rabbit kan gå til Venstre EN enkelt gang
         Location location1 = new Location(3, 4);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
 
 
@@ -177,9 +177,9 @@ public class TestRabbit {
 
         Location location1 = new Location(4, 6);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
 
         Assertions.assertEquals(location1, w.getLocation(rabbit));
@@ -201,9 +201,9 @@ public class TestRabbit {
 
         Location location1 = new Location(4, 2);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
 
         Assertions.assertEquals(location1, w.getLocation(rabbit));
@@ -225,9 +225,9 @@ public class TestRabbit {
 
         Location location1 = new Location(6,2 );
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
 
         Assertions.assertEquals(location1, w.getLocation(rabbit));
@@ -248,9 +248,9 @@ public class TestRabbit {
 
         Location location1 = new Location(2,6 );
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
 
         Assertions.assertEquals(location1, w.getLocation(rabbit));
@@ -272,9 +272,9 @@ public class TestRabbit {
 
         Location location1 = new Location(3,3 );
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
 
         Assertions.assertEquals(location1, w.getLocation(rabbit));
@@ -294,9 +294,9 @@ public class TestRabbit {
 
         Location location1 = new Location(6,6);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
 
 
@@ -319,9 +319,9 @@ public class TestRabbit {
 
         Location location1 = new Location(2,2);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
-        rabbit.moveto(w,location1);
+        rabbit.moveTowards(w,location1);
 
 
 
@@ -345,7 +345,7 @@ public class TestRabbit {
 
 
         w.setTile(location, burrow);
-
+        w.setTile(location, burrow);
         w.setCurrentLocation(location);
         System.out.println(w.getNonBlocking(location));
 

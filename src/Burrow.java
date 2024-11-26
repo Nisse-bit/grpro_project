@@ -3,39 +3,26 @@ import itumulator.executable.DisplayInformation;
 import itumulator.world.Location;  // til PutBurrow metode
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
-
 import java.awt.Color;
-import java.util.List;
-import java.util.LinkedList;
 
 public class Burrow implements DynamicDisplayInformationProvider, NonBlocking {
     private DisplayInformation di;
-    private List<Rabbit> associatedRabbits;
 
     //Konstruktør
     public Burrow(){
         di = new DisplayInformation(Color.orange,"hole-small",true);
-        associatedRabbits = new LinkedList<>();
+        //associatedRabbits = new LinkedList<>();
     }
 
-    //Metoder return DisplayInformation
+    //Metoder
     @Override public DisplayInformation getInformation(){
         return di;
     }
 
-
-
-    //Metoder til associates-listen
-    public void addRabbit(Rabbit rabbit){
-        associatedRabbits.add(rabbit);
-    }
-    public List<Rabbit> getAssociates(){return associatedRabbits;}
-
-    // Lavet så niels kan putte burrows i test
+    // Lavet så Niels kan putte burrows i test
     public void PutBurrow(World world, Location location) {
         if (world.getNonBlocking(location) == null) {
             world.setTile(location, new Burrow());
         }
-
     }
 }
