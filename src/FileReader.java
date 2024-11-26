@@ -1,3 +1,9 @@
+import Animals.Rabbit;
+import Holes.Burrow;
+import Plants.Grass;
+import Animals.Wolf;
+import Plants.BerryBush;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -78,6 +84,20 @@ public class FileReader {
                 int amount = entityMap.get(key);
                 for(int i=amount; i-- >0;){
                     nboList.add(new Burrow());
+                }
+            }
+            //wolf
+                if(key.equalsIgnoreCase("wolf")){
+                    int amount = entityMap.get(key);
+                    for(int i=amount; i-- >0;){
+                        entityList.add(new Wolf());
+                }
+            }
+            //berry
+            if(key.equalsIgnoreCase("berry")){
+                int amount = entityMap.get(key);
+                for(int i=amount; i-- >0;){
+                    entityList.add(new BerryBush());
                 }
             }
         }

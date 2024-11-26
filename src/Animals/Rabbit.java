@@ -1,13 +1,14 @@
-import itumulator.executable.DynamicDisplayInformationProvider;
+package Animals;
+
 import itumulator.executable.DisplayInformation;
-import itumulator.simulator.Actor;
 import itumulator.world.*; //Kaninen benytter alle world's metoder
 import java.awt.Color;
 import java.util.Random;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
-
+import Holes.Burrow;
+import Plants.Grass;
 public class Rabbit extends Animal{
     private Burrow burrow;
 
@@ -190,6 +191,4 @@ public class Rabbit extends Animal{
         }
         return null; //Hvis der ikke er en hule i nærheden returneres null
     }
-
-
 }

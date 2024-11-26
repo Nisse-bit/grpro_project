@@ -1,37 +1,33 @@
-import itumulator.world.NonBlocking;
+package Plants;
+
+import itumulator.executable.DisplayInformation;
+import itumulator.executable.DynamicDisplayInformationProvider;
+import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
-import itumulator.executable.DynamicDisplayInformationProvider;
-import itumulator.executable.DisplayInformation;
-import itumulator.simulator.Actor;
-import java.awt.Color;
-import java.util.List;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-public class Grass implements Actor, NonBlocking, DynamicDisplayInformationProvider {
-    private DisplayInformation di;
+abstract class Plant implements Actor, DynamicDisplayInformationProvider {
+    protected DisplayInformation di;
 
     //Konstruktør
-    public Grass() {
-        di = new DisplayInformation(Color.green, "grass", true);
-    }
-
-    //Metoder
-    @Override
-    public DisplayInformation getInformation() {
-        return di;
+    protected Plant() {
     }
 
     @Override
     public void act(World world) {
-        tryToSpread(world);
     }
 
-    //Spread
+    public DisplayInformation getInformation() {
+        return di;
+    }
+
     /**
-     * Græsset har 2% sandsynlighed for at sprede sig.
-     * @param world verdenen som græsset er i
+     * Planter har 2% sandsynlighed for at sprede sig.
+     * @param world verdenen som planten er i
      */
     public void tryToSpread(World world) {
         List<Location> surroundingAvailableNonBlockingTiles = new ArrayList<>(); //Opretter en liste til tilgængelige felter
@@ -47,7 +43,15 @@ public class Grass implements Actor, NonBlocking, DynamicDisplayInformationProvi
         if (new Random().nextInt(0, 50) == 42) { //2% chance for at sprede sig
             int r = new Random().nextInt(0, surroundingAvailableNonBlockingTiles.size()); //Vælger tilfældigt index
             Location l = surroundingAvailableNonBlockingTiles.get(r); //Gemmer lokationen med indexnummer r
-            world.setTile(l, new Grass()); //Sætter nyt græs
+            if (this.getClass() == Grass.class) {
+                world.setTile(l, new Grass()); //Sætter nyt græs
+            }
+            if (this.getClass() == BerryBush.class) {
+                world.setTile(l, new BerryBush()); //Sætter ny berrybush
+            }
+
         }
+
+
     }
 }

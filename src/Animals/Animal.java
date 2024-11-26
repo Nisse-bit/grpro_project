@@ -1,3 +1,5 @@
+package Animals;
+
 import itumulator.world.World;
 import itumulator.world.Location;
 import itumulator.simulator.Actor;
@@ -37,6 +39,8 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
     @Override
     public void act(World world) {
+
+        this.moveRandomly(world);
     }
 
     /**
@@ -64,8 +68,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
     /**
      * Returnerer dyrets alder.
-     *
-     * @return dyrets alder
+     * @return int dyrets alder
      */
     public int getAge() {
         return age;
@@ -73,10 +76,39 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
     /**
      * Dyret forsøger at parre sig med et tilfældigt, nært, modsat-kønnet dyr, op til én gang om dagen.
-     *
      * @param world verdenen som dyret er i
      */
-    public void tryToBreed(World world) {
+    public void tryToBreed(World world) throws NoSuchMethodException {
+        if(world.getCurrentTime()%20 == 0 ){canBreed = true;} //Hvis det er en ny dag, nulstil canBreed
+        if(!canBreed){return;} //Hvis dyret har parret i dag, stop metoden
+
+        List<Location> tilesForBaby = new ArrayList<>(world.getEmptySurroundingTiles(world.getLocation(this)));
+        if(tilesForBaby.isEmpty()){return;} //Hvis der ikke er plads til at få en unge, stop metoden
+
+        List<Animal> surroundingPartners = new ArrayList<>(); //Liste af omkringliggende potentielle partnere
+        for(Location l : world.getSurroundingTiles(world.getLocation(this))){
+            if(world.getTile(l) instanceof Rabbit p){
+                if(this.sex.equals("male") && p.sex.equals("female")){surroundingPartners.add(p);}
+                if(this.sex.equals("female") && p.sex.equals("male")){surroundingPartners.add(p);}
+            }
+        }
+        if(surroundingPartners.isEmpty()){return;} //Hvis der ikke er mindst én potentiel partner, stop metoden
+
+        Random random = new Random();
+        int rand1 = random.nextInt(100); //Sandsynlighed for at parre, for nu bare 100% for testing purposes
+        if(rand1 < 100){
+            int rand2 = random.nextInt(surroundingPartners.size());
+            Animal mate = surroundingPartners.get(rand2); //Vælger en tilfældig partner
+
+            int rand3 = random.nextInt(tilesForBaby.size());
+            Location l = tilesForBaby.get(rand3); //Vælger tilfældig lokation til ungen
+            world.setTile(l, new Rabbit()); //Sætter ungen i verden
+
+            this.canBreed = false; //Kaninen stoppes fra at parre mere i dag
+            mate.canBreed = false; //Partneren stoppes fra at parre mere i dag
+            this.adjustEnergy(world, -1); //Kaninen mister energi
+            mate.adjustEnergy(world, -1); //Partneren mister energi
+        }
     }
 
     /**
@@ -159,7 +191,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
                 world.move(this, locationX);
             }
         }
-
+        //Trækker 1 fra i energi når den går
         this.adjustEnergy(world, -1);
     }
 
@@ -179,4 +211,5 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
         }
         /*if(list.size() == 0){System.out.println("["+ this +"]: No moveable spots available, I'll stand still.");}*/
     }
+
 }

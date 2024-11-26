@@ -1,10 +1,13 @@
-
+package TestFolder;
 // havde fejl fordi den ikke var IMPORTED rigtigt.
+import Animals.Rabbit;
+import Holes.Burrow;
+import Plants.Grass;
 import org.junit.jupiter.api.*;
 
 import itumulator.world.Location;
 import itumulator.world.World;
-import itumulator.world.Location;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -328,7 +331,7 @@ public class TestRabbit {
         Assertions.assertEquals(location1, w.getLocation(rabbit));
 
     }
-
+// intuition
 
     // Den her tester om kaniner, går imod locationer og også gemmer sig i dem.
     @Test
@@ -345,7 +348,7 @@ public class TestRabbit {
 
 
         w.setTile(location, burrow);
-        w.setTile(location, burrow);
+
         w.setCurrentLocation(location);
         System.out.println(w.getNonBlocking(location));
 
