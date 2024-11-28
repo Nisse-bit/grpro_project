@@ -131,7 +131,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
         int x = location.getX();
         int y = location.getY();
 
-        //Kaninens koordinater
+        //objects koordinater
         int Ry = world.getLocation(this).getY();
         int Rx = world.getLocation(this).getX();
 

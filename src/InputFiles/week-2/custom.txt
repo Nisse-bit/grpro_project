@@ -1,6 +1,6 @@
-10
+15
 bear 1 (5,5)
 bear 1 (3,3)
-bear 1 (0,0)
+rabbit 30
 grass 10-15
 berry 20

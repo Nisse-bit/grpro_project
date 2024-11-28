@@ -91,7 +91,7 @@ public class Rabbit extends Animal {
         } //Kaninen spiser kun om dagen og når den ikke er i sin hule
 
         Location l = world.getLocation(this);
-
+        // kaninen spiser kun græs den står på. alt andet ville væremærkeligt!
         if (world.containsNonBlocking(l)) {
             if (world.getNonBlocking(l) instanceof Grass g) {
                 if (new Random().nextInt(4) < 3) { //75% sandsynlighed for at spise
