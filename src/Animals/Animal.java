@@ -39,13 +39,11 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
     @Override
     public void act(World world) {
-
         this.moveRandomly(world);
     }
 
     /**
-     * Justerer dyrets nuværende energi-niveau. (dyrets energi er delt i to; max-energi og faktisk/nuværende-energi)
-     *
+     * Justerer dyrets nuværende energi-niveau. (Dyrets energi er delt i to; max-energi og faktisk/nuværende-energi)
      * @param world verdenen som dyret er i
      * @param value værdien energi-niveauet justeres med
      */

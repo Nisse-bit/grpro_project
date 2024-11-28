@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Grass extends Plant {
+public class Grass extends Plant implements NonBlocking {
 
 
     //Konstruktør

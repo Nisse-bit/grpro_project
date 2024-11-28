@@ -27,7 +27,7 @@ public class TestWolf {
     @BeforeEach
     public void setUp() {
         w = new World(3);
-        wolf = new Wolf();
+        //wolf = new Wolf();
         Wolfden wolfden = new Wolfden();
 
 

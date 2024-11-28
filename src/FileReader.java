@@ -1,38 +1,34 @@
-import Animals.Rabbit;
-import Holes.Burrow;
-import Plants.Grass;
-import Animals.Wolf;
-import Plants.BerryBush;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Random;
 
-public class FileReader {
-    private File file; //Input-filen vi ønsker at læse fra
-    private int worldSize; //Første linje i filen, verdenens størrelse
-    private Map<String, Integer> entityMap; //Map over entities der skal skabes (key), samt hvor mange (value)
-    private List<Object> entityList; //List til at opbevare blocking entities
-    private List<Object> nboList; //List til at opbevare nonblocking entities
+import Plants.Grass;
+import Animals.Rabbit;
+import Holes.Burrow;
+import Animals.Wolf;
+import Animals.Bear;
+import itumulator.world.Location;
+import Plants.BerryBush;
+
+public class FileReader{
+    private int worldSize; //Første linje i filen; verdenens størrelse
+    private List<Object> entityList; //Liste af blocking-entities
+    private List<Object> nboList; //Liste af NonBlocking-entities
 
     //Konstruktør
     /**
-     * Konstruktøren laver en FileReader, som dertil laver et HashMap over "Entity" og amount.
-     * Konstruktøren laver gemmer også en int worldSize fra første linje i læste fil.
-     * @param fileLocation i string form.
-     * @throws FileNotFoundException
+     * Behandler data fra en input-fil til brug i forlængelse af itumulator-biblioteket.
+     * @param fileLocation stien til filen, hvis' data behandles
+     * @throws FileNotFoundException hvis fil-stien er ugyldig
      */
-    public FileReader(String fileLocation) throws FileNotFoundException {
-        this.file = new File(fileLocation);
-        Scanner scanner = new Scanner(file);
-
+    public FileReader(String fileLocation) throws FileNotFoundException{
+        Scanner scanner = new Scanner(new File(fileLocation));
         this.worldSize = Integer.parseInt(scanner.nextLine());
-        this.entityMap = new HashMap<>();
+        this.entityList = new ArrayList<>();
+        this.nboList = new ArrayList<>();
 
         while(scanner.hasNextLine()){
             String line = scanner.nextLine();
@@ -51,119 +47,83 @@ public class FileReader {
                 entityAmount = Integer.parseInt(splitline[1]);
             }
 
-            entityMap.put(entityName, entityAmount);
-        }
-
-        this.makeLists();
-    }
-
-    //makeLists
-    /**
-     * Denne metode laver 2 lister af objekter. 1 Liste af NBO-Objekter & 1 Liste af Actors.
-     */
-    private void makeLists(){
-        this.entityList = new ArrayList<>();
-        this.nboList = new ArrayList<>();
-        for(String key : entityMap.keySet()){
-            //rabbits
-            if(key.equalsIgnoreCase("rabbit")){
-                int amount = entityMap.get(key);
-                for(int i=amount; i-- >0;){
-                    entityList.add(new Rabbit());
-                }
-            }
-            //grass
-            if(key.equalsIgnoreCase("grass")){
-                int amount = entityMap.get(key);
-                for(int i=amount; i-- >0;){
+            //Grass
+            if(entityName.equals("grass")){
+                while(entityAmount-- > 0){
                     nboList.add(new Grass());
                 }
             }
-            //burrow
-            if(key.equalsIgnoreCase("burrow")){
-                int amount = entityMap.get(key);
-                for(int i=amount; i-- >0;){
+
+            //Rabbit
+            if(entityName.equals("rabbit")){
+                while(entityAmount-- > 0){
+                    entityList.add(new Rabbit());
+                }
+            }
+
+            //Burrow
+            if(entityName.equals("burrow")){
+                while(entityAmount-- > 0){
                     nboList.add(new Burrow());
                 }
             }
-            //wolf
-                if(key.equalsIgnoreCase("wolf")){
-                    int amount = entityMap.get(key);
-                    for(int i=amount; i-- >0;){
-                        entityList.add(new Wolf());
+
+            //Wolf
+            if(entityName.equals("wolf")){
+                entityList.add(new Wolf(entityAmount));
+            }
+
+            //Bear
+            if(entityName.equals("bear")){
+                if(splitline.length == 2){
+                    while(entityAmount-- > 0){
+                        entityList.add(new Bear());
+                    }
+                }
+                else if(splitline.length == 3){
+                    //Hvis der er et tredje element i input-linjen, er det en territorie-specifikation
+                    splitline[2] = splitline[2].replaceAll("[()]","");
+                    int x = Integer.parseInt(splitline[2].split(",")[0]);
+                    int y = Integer.parseInt(splitline[2].split(",")[1]);
+
+                    while(entityAmount-- > 0){
+                        entityList.add(new Bear(new Location(x,y)));
+                    }
                 }
             }
-            //berry
-            if(key.equalsIgnoreCase("berry")){
-                int amount = entityMap.get(key);
-                for(int i=amount; i-- >0;){
+
+            //BerryBush
+            if(entityName.equals("berry")){
+                while(entityAmount-- > 0){
                     entityList.add(new BerryBush());
                 }
             }
         }
+        scanner.close();
     }
 
-    //getEntityList
-    public List<Object> getEntityList(){
-        if(entityList == null){this.makeLists();}
-        return entityList;
-    }
-    //getEntityAmount
+    //Metoder
     /**
-     * En simpel metode der returnere summen af objekter i EntityListen
-     * @return int sum
+     * Returnerer verdenens størrelse.
+     * @return verdenens størrelse
      */
-    public int getEntityAmount(){
-        int sum = 0;
-        for(Object o : this.getEntityList()){
-            sum += 1;
-        }
-        return sum;
-    }
-
-    //getNboList
-    public List<Object> getNboList(){
-        if(entityList == null){this.makeLists();}
-        return nboList;
-    }
-
-    //getNBOAmount
-    /**
-     * En simpel metode der returnere summen af objekter i NBOListen
-     * @return int sum
-    */
-    public int getNBOAmount(){
-        int sum = 0;
-        for(Object o : this.getNboList()){
-            sum += 1;
-        }
-        return sum;
-    }
-
-    //getEntityMap
-    public Map<String,Integer> getEntityMap(){
-        return entityMap;
-    }
-
-    //getFile
-    public File getFile() {
-        return file;
-    }
-
-    //getWorldSize
     public int getWorldSize(){
         return worldSize;
     }
 
-    //printInfo
     /**
-    * En simpel metode primært brugt til debugging af FileReader konstruktøren.
-    */
-    public void printInfo(){
-        System.out.println("Worldsize: "+ worldSize);
-        for(String entity : entityMap.keySet()){
-            System.out.println("Entity: "+ entity +", amount: "+ entityMap.get(entity));
-        }
-        System.out.println();
+     * Returnerer listen af "blocking entities".
+     * @return listen af "blocking entities"
+     */
+    public List<Object> getEntityList(){
+        return entityList;
+    }
+
+    /**
+     * Returnerer listen af "nonblocking entities".
+     * @return listen af "nonblocking entities"
+     */
+    public List<Object> getNonBlockingList(){
+        return nboList;
     }
 }

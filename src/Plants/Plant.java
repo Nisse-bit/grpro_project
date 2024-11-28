@@ -40,7 +40,7 @@ abstract class Plant implements Actor, DynamicDisplayInformationProvider {
             return;
         } //Hvis der er ingen ledige pladser, stop
 
-        if (new Random().nextInt(0, 50) == 42) { //2% chance for at sprede sig
+        if (new Random().nextInt(0, 50) == 41) { //2% chance for at sprede sig
             int r = new Random().nextInt(0, surroundingAvailableNonBlockingTiles.size()); //Vælger tilfældigt index
             Location l = surroundingAvailableNonBlockingTiles.get(r); //Gemmer lokationen med indexnummer r
             if (this.getClass() == Grass.class) {

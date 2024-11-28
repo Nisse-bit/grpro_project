@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
-        FileReader fReader = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\InputFiles\\week-2\\t2-2a.txt");
+        FileReader fReader = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\InputFiles\\week-2\\custom.txt");
 
         //----------- World Setup --------
         int size = fReader.getWorldSize();
@@ -19,7 +19,7 @@ public class Main {
 
         //-------- Placement of Objects ---------
         //Placér blocking objects
-        if ((size * size) < fReader.getEntityAmount()) {
+        if ((size * size) < fReader.getEntityList().size()) {
             throw new IllegalArgumentException("*** World is smaller than total animals");
         } else {
             for (Object o : fReader.getEntityList()) {
@@ -40,11 +40,11 @@ public class Main {
             }
         }
         //Placér non-blocking objects
-        if ((size * size) < fReader.getNBOAmount()) {
-            throw new IllegalArgumentException("*** World is smaller than total Objects");
+        if ((size * size) < fReader.getNonBlockingList().size()) {
+            throw new IllegalArgumentException("*** World is smaller than total NBO's");
         } else {
 
-            for (Object nbo : fReader.getNboList()) {
+            for (Object nbo : fReader.getNonBlockingList()) {
                 //Tildel tilfældig lokation
                 Random r = new Random();
                 int x = r.nextInt(size);
@@ -62,10 +62,6 @@ public class Main {
             }
         }
 
-
-
         p.show();
     }
-
-
 }
