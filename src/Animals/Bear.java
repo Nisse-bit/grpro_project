@@ -2,42 +2,41 @@ package Animals;
 
 import itumulator.executable.DisplayInformation;
 import itumulator.world.*;
+
 import java.awt.*;
 import java.util.*;
-public class Bear extends Animal{
+
+public class Bear extends Animal {
     public Location territory;
+    protected Set<Location> territorytiles;
 
     //Konstruktører
     //uden territorie
-    Set<Location> bearLocations;
-    public Bear(){
-        di = new DisplayInformation(Color.BLACK,"bear",true);
+    public Bear() {
+        di = new DisplayInformation(Color.BLACK, "bear", true);
         territory = null;
-        energy = new int[]{150,150};
+        energy = new int[]{150, 150};
     }
 
     //med territorie
-    public Bear(Location territory){
-        di = new DisplayInformation(Color.BLACK,"bear",true);
+    public Bear(Location territory) {
+        di = new DisplayInformation(Color.BLACK, "bear", true);
         this.territory = territory;
-        energy = new int[]{150,150};
+        energy = new int[]{150, 150};
     }
 
     //Metoder
     @Override
     public void act(World world) {
-
-        if(territory == null) {
+        System.out.println(world.getLocation(this));
+        if (territory == null) {
             //find et territory som den kan knytte sig til.
             // siden bjørne ikke er flok dyr som ulve, har de et individuelt territorie defor "finder den et territoerie der hvor den står" hvis den ikke har et.
-            this.CreateTerritory(world);
-
-
-
-        } else{
-            this.BearMoveLogic(world);// bevæger sig i sit og mod det hvis den er ude af det territory.
+            createTerritory(world);
+        } else {
+            this.bearBrain(world);// bevæger sig i sit og mod det hvis den er ude af det territory.
         }
-
+        if(dies){world.remove(this);}
     }
 /* Bjørnen er meget territoriel, og har som udgangspunkt ikke et bestemt sted den
 ’bor’. Den knytter sig derimod til et bestemt område og bevæger sig sjældent ud herfra.
@@ -45,51 +44,49 @@ Dette territories centrum bestemmes ud fra bjørnens startplacering på kortet
  */
 
     /**
-     * Returnerer Set med alle de felter hvor bjørnen bevæger sig.
+     * Returnerer Set med alle de felter hvor bjørnen bevæger sig i sit territeorie.
+     *
      * @param world
      * @param territory bjønens start territory.
      * @return Set<Location>
      */
-    public Set<Location> BearTerritory(World world, Location territory){
+    public Set<Location> getTerritoryTiles(World world, Location territory) {
         // bjørnen bevæger sig kun inden for 2 radius af sit startfelt.
-        int radius = 2;
-        return world.getSurroundingTiles(territory,radius);
-
+        Set<Location> territoryTiles = world.getSurroundingTiles(territory, 1);
+        territoryTiles.add(territory);
+        return territoryTiles;
     }
 
     /**
-     * Bevægelses logik for bjørn
-     * den går inde i sit territoerie tilfældigt, hvis den ikke
-     *
+     * Bevægelses logik for bjørnen, der gør, at den går rundt inde i sit territorie tilfældigt.
+     * Hvis den kommer til at bevæge sig ud fra sit territorie, så prøver den at bevæge sig tilbage.
      * @param world
-     * @param
      */
-    public void BearMoveLogic(World world) {
-        bearLocations = BearTerritory(world,territory);
-        while(bearLocations.contains(world.getLocation(this))) {
+    public void bearBrain(World world) {
+        territorytiles = getTerritoryTiles(world, territory);
+
+
+        if (territorytiles.contains(world.getLocation(this))) {
             this.moveRandomly(world);
+
+        } else {
+            Location olocation = world.getLocation(this);
+            this.moveTowards(world, territory);
+            // bjørn kan sidde fast, hvis bjørnen har en busk i vejen vil den stå stille, derfor skal vi gemme dens gamle location
+            if (olocation.equals(world.getLocation(this))) {
+                moveRandomly(world);
+                System.out.println("bush inna da way");
+                // destroyberrybush()  // eat()
+            }
         }
-        if(territory == null) {
-            this.CreateTerritory(world);
-        }
-        this.moveTowards(world,this.territory);
-
-
-
 
 
     }
 
-    public void CreateTerritory(World world) {
-        Location location;
-        if (this.territory == null) {
-            location = world.getLocation(this);
-            this.territory = location;
-        }else {
-
-        }
-
+    public void createTerritory(World world) {
+        this.territory = world.getLocation(this);
     }
-
 
 }
+
+

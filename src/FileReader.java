@@ -70,7 +70,10 @@ public class FileReader{
 
             //Wolf
             if(entityName.equals("wolf")){
-                entityList.add(new Wolf(entityAmount));
+                int packID = new Random().nextInt(Integer.MAX_VALUE);
+                while(entityAmount-- > 0){
+                    entityList.add(new Wolf(packID));
+                }
             }
 
             //Bear

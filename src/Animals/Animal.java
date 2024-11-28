@@ -142,7 +142,8 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
             if (world.isTileEmpty(locationXY)) {  //Checker om der står noget på feltet
                 world.move(this, locationXY); //Bevæger dyret til det nye sted
             }
-            /*else{System.out.println("["+ this +"] Der er noget i vejen, jeg kan ikke komme til mit hul!");}*/
+            else{System.out.println("["+ this +"] Der er noget i vejen, jeg kan ikke komme til mit hul!");}
+
         } else if (x < Rx && y < Ry) { //Hvis lokationens xy er mindre end dyrets xy...
             Rx = Rx - 1;
             Ry = Ry - 1; //Bevæger sig diagonalt ned til venstre
@@ -205,9 +206,9 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
             int r = new Random().nextInt(list.size());
             Location l = list.get(r);
             world.move(this, l);
-            this.adjustEnergy(world, -1); //Kaninen mister energi
+            this.adjustEnergy(world, -1); //dyr mister energi
         }
-        /*if(list.size() == 0){System.out.println("["+ this +"]: No moveable spots available, I'll stand still.");}*/
+        if(list.size() == 0){System.out.println("["+ this +"]: No moveable spots available, I'll stand still.");}
     }
 
 }

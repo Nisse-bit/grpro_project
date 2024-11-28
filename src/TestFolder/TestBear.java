@@ -31,7 +31,7 @@ public class TestBear {
         bear = new Bear();
         Location tlocation = new Location(3,4);
         world.setTile(tlocation, bear);
-        territory = bear.BearTerritory(world,tlocation);
+        territory = bear.getTerritoryTiles(world,tlocation);
 
 
     }
@@ -41,12 +41,12 @@ public class TestBear {
     public void BearMoveTest(){
        tlocation = new Location(3,4);
         System.out.println(tlocation);
-        System.out.println(bear.BearTerritory(world,tlocation));
+        System.out.println(bear.getTerritoryTiles(world,tlocation));
 
         Location Startlocation = world.getLocation(bear);
         // bevæger sig forhåbenligt
-        bear.CreateTerritory(world);
-        bear.BearMoveLogic(world);
+        bear.createTerritory(world);
+        bear.bearBrain(world);
 
 
 
@@ -63,7 +63,7 @@ public class TestBear {
         Bear bear1 = new Bear();
         Location location = new Location(5,5);
         world.setTile(location, bear1);
-        bear.CreateTerritory(world);
+        bear.createTerritory(world);
 
         assertNotNull(bear.territory);
 
@@ -76,9 +76,9 @@ public class TestBear {
         Bear bear1 = new Bear();
         Location location = new Location(5,5);
         world.setTile(location, bear1);
-        bear.CreateTerritory(world);
-        System.out.println(bear.BearTerritory(world,bear.territory));
-        assertNotNull(bear.BearTerritory(world,bear.territory));
+        bear.createTerritory(world);
+        System.out.println(bear.getTerritoryTiles(world,bear.territory));
+        assertNotNull(bear.getTerritoryTiles(world,bear.territory));
     }
     @Test
     public void Bearkonstruktortest(){
