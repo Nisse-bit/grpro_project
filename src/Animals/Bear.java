@@ -4,6 +4,7 @@ import itumulator.executable.DisplayInformation;
 import itumulator.simulator.Actor;
 import itumulator.world.*;
 import Plants.*;
+
 import java.awt.*;
 import java.util.*;
 
@@ -12,6 +13,7 @@ public class Bear extends Animal {
     protected Set<Location> territorytiles;
     protected Object target;
     protected Location plocation; // target location p for prey
+
     //Konstruktører
     //uden territorie
     public Bear() {
@@ -30,12 +32,12 @@ public class Bear extends Animal {
     //Metoder
     @Override
     public void act(World world) {
-        if(world.isDay()) {
+        if (world.isDay()) {
             //hunt(world);
             // der skal en boolean på her orker ikke mere
         }
         System.out.println(world.getLocation(this));
-        System.out.print(" "+energy[1]);
+        System.out.print(" " + energy[1]);
         if (territory == null) {
             //find et territory som den kan knytte sig til.
             // siden bjørne ikke er flok dyr som ulve, har de et individuelt territorie defor "finder den et territoerie der hvor den står" hvis den ikke har et.
@@ -43,9 +45,11 @@ public class Bear extends Animal {
         } else {
             this.bearBrain(world);// bevæger sig i sit og mod det hvis den er ude af det territory.
         }
-        if(dies){world.remove(this);}
+        if (dies) {
+            world.remove(this);
+        }
 
-        adjustEnergy(world,-5); // det tager meget energi at være bjørn
+        adjustEnergy(world, -5); // det tager meget energi at være bjørn
     }
 /* Bjørnen er meget territoriel, og har som udgangspunkt ikke et bestemt sted den
 ’bor’. Den knytter sig derimod til et bestemt område og bevæger sig sjældent ud herfra.
@@ -69,6 +73,7 @@ Dette territories centrum bestemmes ud fra bjørnens startplacering på kortet
     /**
      * Bevægelses logik for bjørnen, der gør, at den går rundt inde i sit territorie tilfældigt.
      * Hvis den kommer til at bevæge sig ud fra sit territorie, så prøver den at bevæge sig tilbage.
+     *
      * @param world
      */
     public void bearBrain(World world) {
@@ -93,89 +98,83 @@ Dette territories centrum bestemmes ud fra bjørnens startplacering på kortet
         }
     }
 
-    @Override //Overidder selvom animals spise funktioner er ret ens.
+    @Override
     public void tryToEat(World world) {
 
         Set<Location> surroudingtiles = world.getSurroundingTiles(world.getLocation(this));
         //tilføjer sit eget felt, fordi den kan godt spise græs under den.
-        Location Blocation = world.getLocation(this);
-
-        for (Location location: surroudingtiles) {
-            Object object = world.getTile(location);
-
-            if (object instanceof Grass && Blocation == world.getLocation(object)) {
-                // hvis bjørnen har meget energi, vil den have spist meget mad, eller være fuld af næring.
-                // derfor skal den spise græs til at få fibre og fordøje dens mad.
-                // ligesom kaninen kan bjørnen kun spise græs hvis den står over den.
-
-                if(energy[1] < 130) {
-                    // hvis energi er over 130, vil den spise græs {
-                    this.adjustEnergy(world,2);
-                    world.delete(object);
+        Location e = world.getLocation(this);
+        // bjørnen spiser kun græs den står på. alt andet ville væremærkeligt!
+        if (world.containsNonBlocking(e)) {
+            if (world.getNonBlocking(e) instanceof Grass g) {
+                if (new Random().nextInt(10) < 2) { //20% sandsynlighed for at spise
+                    world.delete(g);
+                    this.adjustEnergy(world, 4); //Kaninen får energi
                 }
-            }
-            if (object instanceof BerryBush) {
-                if(((BerryBush) object).hasFruits) {
-                    ((BerryBush) object).loseBerries();
-                    adjustEnergy(world, 10);
-
-                    // der er en chance for at bjørnen spiser Hele busken, hvis den er sulten nok,
-                    // men så er den sulten på lang sigt.
-
-                    if(energy[1] > 30) {
-                        world.delete(object);
-                        adjustEnergy(world, 9);
-                    }
-                }
-
-
-            }
-            // bjørnen spiser kaniner som kommer tæt på.
-            if (object instanceof Rabbit) {
-                adjustEnergy(world, 20); // meget energi fra kaniner
-                world.delete(object);
             }
         }
+        for (Location l : surroudingtiles) {
+            if (world.getTile(l) instanceof BerryBush bush) {
+                // der er en chance for at bjørnen spiser Hele busken, hvis den er sulten nok,
+                if (energy[1] <= 15) {
+                    world.delete(bush);
+                    adjustEnergy(world, 15);
+                }
 
-    }
-
-    /**jager dyr, nå den er sulten,
-     *
-     * @param world
-     */
-    public void hunt(World world){
-
-
-
-        Location plocation;
-
-        if(energy[1] < 60) {  // måske den her if rykkes til act
-            System.out.println("Im hungry as shit lets hunt");
-            Map<Object, Location> entities = world.getEntities();
-
-            if (!entities.containsKey(target)||target == null) {
-                for (Object object : entities.keySet()) {
-                    if(object instanceof Rabbit) {
-                        plocation = entities.get(object);
-                        this.moveTowards(world, plocation);
-
-                        //kunne godt tænke mig at den gemmer location, så den jager den samme kanin, og ikke en ny hver gang den her blir kørt
-                        Object target = object;
-
+                if (bush.getFruit(world)) {
+                    if (new Random().nextInt(10) <= 2) { //20% sandsynlighed for at spise
+                        this.adjustEnergy(world, 10);
+                        bush.loseBerries();
                     }
                 }
-            } else {
-                moveTowards(world, world.getLocation(target));
             }
-
-
         }
-    }
-    public void createTerritory(World world) {
-        this.territory = world.getLocation(this);
+        // bjørnen spiser kaniner som kommer tæt på.
+        for (Location l : surroudingtiles) {
+            if (world.getTile(l) instanceof Rabbit rabbit) {
+                this.adjustEnergy(world, 20);
+                rabbit.dies = true;
+            }
+        }}
+
+
+
+/**
+ * Bjørnen jager dyr, når den er sulten,
+ * @param world
+ */
+
+public void hunt(World world) {
+    Location plocation;
+
+    if (energy[1] < 60) {  // måske den her if rykkes til act
+        System.out.println("Im hungry as shit lets hunt");
+        Map<Object, Location> entities = world.getEntities();
+
+        if (!entities.containsKey(target) || target == null) {
+            for (Object object : entities.keySet()) {
+                if (object instanceof Rabbit) {
+                    plocation = entities.get(object);
+                    this.moveTowards(world, plocation);
+
+                    //kunne godt tænke mig at den gemmer location, så den jager den samme kanin, og ikke en ny hver gang den her blir kørt
+                    Object target = object;
+
+                }
+            }
+        } else {
+            moveTowards(world, world.getLocation(target));
+        }
+
 
     }
+}
+
+public void createTerritory(World world) {
+    this.territory = world.getLocation(this);
 
 }
+
+    }
 
 
