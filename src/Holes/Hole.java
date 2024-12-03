@@ -4,7 +4,7 @@ import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.world.NonBlocking;
 
-abstract class Hole implements NonBlocking, DynamicDisplayInformationProvider {
+public abstract class Hole implements NonBlocking, DynamicDisplayInformationProvider {
     protected DisplayInformation di;
 
     //Konstruktør

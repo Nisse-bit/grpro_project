@@ -1,5 +1,3 @@
-package TestFolder;
-// havde fejl fordi den ikke var IMPORTED rigtigt.
 import Animals.Rabbit;
 import Holes.Burrow;
 import Plants.Grass;
@@ -364,11 +362,11 @@ public class TestRabbit {
         // nu skal kaninen gå i mod burrow.
         // det burde den gøre
         Assertions.assertNotNull(burrow);
-
+        w.step();
         rabbit.act(w);
         System.out.println("Rabbit Location after first act: " + w.getLocation(rabbit));
         // her burde rabbit bevæge sig imod hullet, men den gør det ikke, fsome reason. selvom act bliver kørt på den.
-
+        w.step();
         rabbit.act(w);
         System.out.println("Rabbit Location after second act: " + w.getLocation(rabbit));
 

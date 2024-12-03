@@ -12,6 +12,8 @@ import Animals.Wolf;
 import Animals.Bear;
 import itumulator.world.Location;
 import Plants.BerryBush;
+import Holes.WolfDen;
+import Animals.Carcass;
 
 public class FileReader{
     private int worldSize; //Første linje i filen; verdenens størrelse
@@ -74,6 +76,7 @@ public class FileReader{
                 while(entityAmount-- > 0){
                     entityList.add(new Wolf(packID));
                 }
+                nboList.add(new WolfDen(packID));
             }
 
             //Bear
@@ -99,6 +102,36 @@ public class FileReader{
             if(entityName.equals("berry")){
                 while(entityAmount-- > 0){
                     entityList.add(new BerryBush());
+                }
+            }
+
+            //Carcass
+            if(entityName.equals("carcass")){
+                boolean infected = false;
+                if(splitline[1].equals("fungi")){
+                    infected = true;
+
+                    if(splitline[2].contains("-")){
+                        int min = Integer.parseInt(splitline[2].split("-")[0]);
+                        int max = Integer.parseInt(splitline[2].split("-")[1]) + 1;
+                        entityAmount = new Random().nextInt(min,max);
+                    }
+                    else{
+                        entityAmount = Integer.parseInt(splitline[2]);
+                    }
+                }
+                else if(splitline[1].contains("-")){
+                    int min = Integer.parseInt(splitline[1].split("-")[0]);
+                    int max = Integer.parseInt(splitline[1].split("-")[1]) + 1;
+                    entityAmount = new Random().nextInt(min,max);
+                }
+                else{
+                    entityAmount = Integer.parseInt(splitline[1]);
+                }
+
+                while(entityAmount-- > 0){
+                    String size = (new Random().nextInt(2) == 0)? ("big") : ("small");
+                    entityList.add(new Carcass(infected, size));
                 }
             }
         }

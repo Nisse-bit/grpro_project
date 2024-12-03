@@ -5,6 +5,9 @@ import itumulator.world.World;
 import java.io.FileNotFoundException;
 import java.util.Random;
 
+import Holes.Hole;
+import Plants.BerryBush;
+
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         FileReader fReader = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\InputFiles\\week-2\\custom.txt");
@@ -51,7 +54,7 @@ public class Main {
                 int y = r.nextInt(size);
 
                 Location l = new Location(x, y);
-                while (w.getNonBlocking(l) != null) {  //
+                while (w.getNonBlocking(l) != null || (nbo instanceof Hole && w.getTile(l) instanceof BerryBush)) {  //
                     x = r.nextInt(size);
                     y = r.nextInt(size);
                     l = new Location(x, y);

@@ -91,7 +91,7 @@ public class Rabbit extends Animal {
         } //Kaninen spiser kun om dagen og når den ikke er i sin hule
 
         Location l = world.getLocation(this);
-        // kaninen spiser kun græs den står på. alt andet ville væremærkeligt!
+        //Kaninen spiser kun græs den står på. alt andet ville væremærkeligt!
         if (world.containsNonBlocking(l)) {
             if (world.getNonBlocking(l) instanceof Grass g) {
                 if (new Random().nextInt(4) < 3) { //75% sandsynlighed for at spise
@@ -121,12 +121,12 @@ public class Rabbit extends Animal {
             if (age == 30) {
                 di = new DisplayInformation(Color.darkGray, "rabbit-large", true);
                 energy[0] = (new Random().nextInt(3) == 0) ? 40 : 30;
-                //33% sandsynlighed for at kaninen får 30 max-energi istedet for 40
+                //33% sandsynlighed for at kaninen får 30 max-energi i stedet for 40
             }
             if (age == 60) {
                 di = new DisplayInformation(Color.black, "rabbit-old", true);
                 energy[0] = (new Random().nextInt(2) == 0) ? 25 : 10;
-                //50% sandsynlighed for at kaninen får 10 max-energi istedet for 25
+                //50% sandsynlighed for at kaninen får 10 max-energi i stedet for 25
             }
             if (age == 90) {
                 dies = true;
@@ -175,6 +175,8 @@ public class Rabbit extends Animal {
                     burrow = nearestBurrow(world, 3); //Hvis kaninen ikke har en hule, forsøger den at finde en
                     if (burrow == null) {
                         //Hvis kaninen ikke fandt en hule, forsøger den at grave en
+                        // hvad hvis den graver et hul der hvor der er græs.
+
                         if (!(world.getNonBlocking(rLocation) instanceof NonBlocking)) {
                             Burrow b = new Burrow();
                             world.setTile(rLocation, b);
@@ -194,7 +196,11 @@ public class Rabbit extends Animal {
                     onMap = false;
                     canBreed = false;
                 } else {
-                    this.moveTowards(world, world.getLocation(burrow));
+                    // Object does not exist in the world exception.
+
+
+                       moveTowards(world, world.getLocation(burrow));
+
                 }
             } else {
                 this.moveRandomly(world); //Hvis det ellers er dag, hopper kaninen tilfældigt

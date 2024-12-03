@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-abstract class Animal implements Actor, DynamicDisplayInformationProvider {
+public abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     protected DisplayInformation di;
     protected int age;
     protected int[] energy;
@@ -142,7 +142,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
             if (world.isTileEmpty(locationXY)) {  //Checker om der står noget på feltet
                 world.move(this, locationXY); //Bevæger dyret til det nye sted
             }
-            else{System.out.println("["+ this +"] Der er noget i vejen, jeg kan ikke komme til mit hul!");}
+            else{System.out.println("["+ this +"] Der er noget i vejen, jeg kan ikke komme til Min destination");}
 
         } else if (x < Rx && y < Ry) { //Hvis lokationens xy er mindre end dyrets xy...
             Rx = Rx - 1;
