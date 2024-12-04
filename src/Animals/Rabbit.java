@@ -32,7 +32,7 @@ public class Rabbit extends Animal {
         this.tryToBreed(world);
 
         if (dies) {
-            world.delete(this);
+            this.die(world);
         }
     }
 
@@ -175,8 +175,6 @@ public class Rabbit extends Animal {
                     burrow = nearestBurrow(world, 3); //Hvis kaninen ikke har en hule, forsøger den at finde en
                     if (burrow == null) {
                         //Hvis kaninen ikke fandt en hule, forsøger den at grave en
-                        // hvad hvis den graver et hul der hvor der er græs.
-
                         if (!(world.getNonBlocking(rLocation) instanceof NonBlocking)) {
                             Burrow b = new Burrow();
                             world.setTile(rLocation, b);
@@ -185,6 +183,15 @@ public class Rabbit extends Animal {
                         //Hvis kaninen stadig ikke har en hule, finder den nu nærmeste hule i hele verdenen
                         if (burrow == null) {
                             burrow = nearestBurrow(world, world.getSize());
+                        }
+                        //Hvis kaninen STADIG ikke har en hule, fremtvinger den en
+                        if(burrow == null){
+                            Object o = world.getNonBlocking(rLocation);
+                            world.delete(o);
+
+                            Burrow b = new Burrow();
+                            world.setTile(rLocation, b);
+                            burrow = b; //Kaninen graver en hule og tilknytter sig den
                         }
                     }
                     //Nu MÅ kaninen altså have en hule

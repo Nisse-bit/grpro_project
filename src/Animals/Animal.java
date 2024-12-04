@@ -211,4 +211,19 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         if(list.size() == 0){System.out.println("["+ this +"]: No moveable spots available, I'll stand still.");}
     }
 
+    /**
+     * Dyret dør og efterlader et ådsel alt efter dets størrelse
+     * @param world verdenen som dyret er i
+     */
+    public void die(World world){
+        String carcassSize;
+        if(this.di.getImageKey().contains("small")){carcassSize = "small";}
+        else if(this.di.getImageKey().contains("rabbit")){carcassSize = "small";}
+        else{carcassSize = "big";}
+        Carcass carcass = new Carcass(false, carcassSize);
+
+        Location here = world.getLocation(this);
+        world.delete(this);
+        world.setTile(here, carcass);
+    }
 }

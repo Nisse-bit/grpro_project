@@ -14,12 +14,10 @@ import itumulator.executable.Program;
 import java.io.FileNotFoundException;
 import java.util.Random;
 
-public class TestWolf {
+public class WolfTest {
     World world;
     Wolf wolf;
-
     WolfDen wolfden;
-    Location location;
 
     @BeforeEach
     public void setUp() {
@@ -29,7 +27,7 @@ public class TestWolf {
     }
 
     @Test //K2-1a tester om ulven kan sættes i verden
-    public void placeInWorldTest() throws FileNotFoundException {
+    public void placeWolfFromFile() throws FileNotFoundException {
         FileReader fr = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\InputFiles\\week-2\\t2-1ab.txt");
         int size = fr.getWorldSize();
         Program p = new Program(size, 42, 42);
@@ -50,7 +48,7 @@ public class TestWolf {
         assertTrue(w.contains(wolf1));
     }
 
-    @Test  //k2-1b tester ulvens dø funktion
+    @Test  //K2-1b tester ulvens dø funktion
     public void Wolfsdying() {
         Wolf wolf = new Wolf(123);
 

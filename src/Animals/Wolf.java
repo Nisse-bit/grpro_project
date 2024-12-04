@@ -13,11 +13,10 @@ import java.util.ConcurrentModificationException;
 
 public class Wolf extends Animal {
     //Unikke felter
-    private int packID;
+    private final int packID;
     private List<Wolf> pack;
     private Wolf alpha;
     private WolfDen den;
-    private boolean finishedCreation;
 
     //Konstruktør
     public Wolf(int packID){
@@ -30,12 +29,11 @@ public class Wolf extends Animal {
         this.pack = null;
         this.alpha = null;
         this.den = null;
-        this.finishedCreation = false;
     }
 
     //Metoder
     public void act(World world){
-        if(!finishedCreation){finishCreation(world);}
+        finishCreation(world);
 
         this.older(world);
         if(alpha == this){
@@ -50,16 +48,16 @@ public class Wolf extends Animal {
             try{
                 this.die(world);
             }
-            catch(ConcurrentModificationException e){}
+            catch(ConcurrentModificationException _){}
         }
     }
 
     /**
-     * Færdiggør instansiering af ulvens private felter, efter ulven er sat i verdenen.
+     * Ulven identificere sin flok, hule og alfa.
      * @param world verdenen som ulven er i
      */
     public void finishCreation(World world){
-        //Flokken, hulen og alfaen identificeres
+        //Flokken og hulen identificeres
         this.pack = new LinkedList<>();
         for(Object o : world.getEntities().keySet()){
             if((o instanceof Wolf w) && (w.packID == this.packID)){
@@ -71,20 +69,17 @@ public class Wolf extends Animal {
         }
 
         //Alfaen identificeres
-        this.alpha = null;
+        if(this.alpha != this){this.alpha = null;}
         for(Wolf w : pack){
             if(w.alpha == w){this.alpha = w;}
         }
 
         //Hvis alfa stadig er null, er det fordi der ikke er en alfa i flokken, derfor gøres denne ulv til alfa
-        if(alpha == null){
+        if(this.alpha == null){
             alpha = this;
             di = new DisplayInformation(Color.RED,"wolf-alpha",true);
             System.out.println(this + ": I'm alpha of pack ["+ packID +"]!");
         }
-
-        //finishedCreation slås til så metoden aldrig køres igen for denne ulv
-        finishedCreation = true;
     }
 
     @Override public void older(World world){
@@ -112,22 +107,21 @@ public class Wolf extends Animal {
         for(Location l : world.getSurroundingTiles(here)){
             Object o = world.getTile(l);
 
-            if(o instanceof Rabbit t){
-                prey.add(t);
+            if(o instanceof Rabbit p){
+                prey.add(p);
             }
-            else if((o instanceof Wolf t) && (t.packID != this.packID)){
-                prey.add(t);
+            else if((o instanceof Wolf p) && (p.packID != this.packID)){
+                prey.add(p);
+            }
+            else if(o instanceof Carcass p){
+                prey.add(p);
             }
         }
         if(prey.isEmpty()){return false;}
 
         //Vælger et tilfældigt bytte, spiser det, og rykker over på dets plads
         int r = new Random().nextInt(prey.size());
-        Animal a = prey.get(r);
-        Location there = world.getLocation(a);
-
-        world.delete(a);
-        world.move(this, there);
+        prey.get(r).die(world);
         this.adjustEnergy(world, 15);
 
         //Hvis ulven har spist, returneres true
@@ -167,7 +161,7 @@ public class Wolf extends Animal {
             }
 
             //Finder den nærmeste kanin, og bevæger sig mod den
-            Rabbit nearestRabbit = rabbits.get(0);
+            Rabbit nearestRabbit = rabbits.getFirst();
             int previous_dX = Integer.MAX_VALUE;
             int previous_dY = Integer.MAX_VALUE;
 
@@ -321,46 +315,6 @@ public class Wolf extends Animal {
 
             //Tilføjer en unge til hulen (hulen finder selv ud af at komme ungen ud i verden)
             den.addToDen(new Wolf(this.packID));
-        }
-
-        /**
-         * Ulven dør, og retter dermed hele flokkens flok-liste og evt. alfa-status.
-         * @param world verdenen som ulven er i
-         */
-        public void die (World world) throws ConcurrentModificationException {
-
-
-            if (pack != null) {  // hvis der ingen pack er skal den bare fortsætte
-
-                //Fjerner ulven fra hele flokkens flok-liste
-                for (Wolf w : pack) {
-                    w.pack.remove(this);
-                }
-
-                //Hvis ulven er alfa, nustilles alfa-status for hele flokken
-                boolean wasAlpha = false;
-                if (this == alpha) {
-                    for (Wolf w : pack) {
-                        w.alpha = null;
-                    }
-                    wasAlpha = true;
-                }
-                // fjerner ulven fra flokken
-                pack.remove(this);
-                //Hvis ulven var alfa, finder flokken en ny alfa
-                if (wasAlpha) {
-                    for (Wolf w : pack) {
-                        w.finishCreation(world);
-                    }
-                }
-
-            }
-
-
-            //Ulven dør
-            world.delete(this);
-
-
         }
 
         /**

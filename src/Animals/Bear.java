@@ -44,7 +44,7 @@ public class Bear extends Animal {
             this.bearBrain(world);// bevæger sig i sit og mod det hvis den er ude af det territory.
         }
         if (dies) {
-            world.delete(this);
+            this.die(world);
         }
 
         adjustEnergy(world, -2); // det tager meget energi at være bjørn

@@ -22,47 +22,39 @@ public class Main {
 
         //-------- Placement of Objects ---------
         //Placér blocking objects
-        if ((size * size) < fReader.getEntityList().size()) {
-            throw new IllegalArgumentException("*** World is smaller than total animals");
-        } else {
-            for (Object o : fReader.getEntityList()) {
-                //Tildel tilfældig lokation
-                Random r = new Random();
-                int x = r.nextInt(size);
-                int y = r.nextInt(size);
+        for (Object o : fReader.getEntityList()) {
+            //Tildel tilfældig lokation
+            Random r = new Random();
+            int x = r.nextInt(size);
+            int y = r.nextInt(size);
 
-                Location l = new Location(x, y);
-                while (!w.isTileEmpty(l)) {  //
-                    x = r.nextInt(size);
-                    y = r.nextInt(size);
-                    l = new Location(x, y);
-                }
-
-                //Sæt objektet ind i verden
-                w.setTile(l, o);
+            Location l = new Location(x, y);
+            while (!w.isTileEmpty(l)) {  //
+                x = r.nextInt(size);
+                y = r.nextInt(size);
+                l = new Location(x, y);
             }
+
+            //Sæt objektet ind i verden
+            w.setTile(l, o);
         }
+        
         //Placér non-blocking objects
-        if ((size * size) < fReader.getNonBlockingList().size()) {
-            throw new IllegalArgumentException("*** World is smaller than total NBO's");
-        } else {
+        for (Object nbo : fReader.getNonBlockingList()) {
+            //Tildel tilfældig lokation
+            Random r = new Random();
+            int x = r.nextInt(size);
+            int y = r.nextInt(size);
 
-            for (Object nbo : fReader.getNonBlockingList()) {
-                //Tildel tilfældig lokation
-                Random r = new Random();
-                int x = r.nextInt(size);
-                int y = r.nextInt(size);
-
-                Location l = new Location(x, y);
-                while (w.getNonBlocking(l) != null || (nbo instanceof Hole && w.getTile(l) instanceof BerryBush)) {  //
-                    x = r.nextInt(size);
-                    y = r.nextInt(size);
-                    l = new Location(x, y);
-                }
-
-                //Sæt objektet ind i verden
-                w.setTile(l, nbo);
+            Location l = new Location(x, y);
+            while (w.getNonBlocking(l) != null || (nbo instanceof Hole && w.getTile(l) instanceof BerryBush)) {  //
+                x = r.nextInt(size);
+                y = r.nextInt(size);
+                l = new Location(x, y);
             }
+
+            //Sæt objektet ind i verden
+            w.setTile(l, nbo);
         }
 
         p.show();

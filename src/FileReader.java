@@ -14,6 +14,7 @@ import itumulator.world.Location;
 import Plants.BerryBush;
 import Holes.WolfDen;
 import Animals.Carcass;
+import Animals.Cordyceps;
 
 public class FileReader{
     private int worldSize; //Første linje i filen; verdenens størrelse
@@ -38,7 +39,7 @@ public class FileReader{
             if(splitline.length == 1){return;} //Nogle filer indeholder tomme linjer
 
             String entityName = splitline[0];
-            int entityAmount;
+            int entityAmount = 0;
 
             if(splitline[1].contains("-")){
                 int min = Integer.parseInt(splitline[1].split("-")[0]);
@@ -46,7 +47,8 @@ public class FileReader{
                 entityAmount = new Random().nextInt(min,max);
             }
             else{
-                entityAmount = Integer.parseInt(splitline[1]);
+                try{entityAmount = Integer.parseInt(splitline[1]);}
+                catch(Exception e){/*gør intet hvis der ikke er et tal*/}
             }
 
             //Grass
@@ -133,8 +135,33 @@ public class FileReader{
                     String size = (new Random().nextInt(2) == 0)? ("big") : ("small");
                     entityList.add(new Carcass(infected, size));
                 }
+
+                //Cordyceps
+                if(entityName.equals("cordyceps")){
+                    String animal = splitline[1];
+                    if(splitline[2].contains("-")){
+                        int min = Integer.parseInt(splitline[2].split("-")[0]);
+                        int max = Integer.parseInt(splitline[2].split("-")[1]) + 1;
+                        entityAmount = new Random().nextInt(min,max);
+                    }
+                    else{
+                        entityAmount = Integer.parseInt(splitline[2]);
+                    }
+
+                    while(entityAmount-- > 0){
+                        entityList.add(new Cordyceps(animal));
+                    }
+                }
             }
         }
+
+        if(entityList.size() > worldSize*worldSize){
+            throw new IllegalArgumentException("more blocking entities than tiles!");
+        }
+        if(nboList.size() > worldSize*worldSize){
+            throw new IllegalArgumentException("more NonBlocking entities than tiles!");
+        }
+
         scanner.close();
     }
 

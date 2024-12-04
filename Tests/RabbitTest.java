@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestRabbit {
+public class RabbitTest {
 
     World w;
     Rabbit rabbit;
