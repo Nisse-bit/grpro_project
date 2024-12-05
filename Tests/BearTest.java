@@ -196,7 +196,7 @@ public class BearTest {
     }
 
     @Test
-    public void BearhuntrabbitsinholeTest(){
+    public void BearhuntrabbitsinholeTest(){  // virker ikke lige nu
 
 
 

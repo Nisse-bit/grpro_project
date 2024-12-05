@@ -16,6 +16,7 @@ public class Bear extends Animal {
     //Konstruktører
     //uden territorie
     public Bear() {
+
         di = new DisplayInformation(Color.BLACK, "bear", true);
         territory = null;
         energy = new int[]{150, 150};

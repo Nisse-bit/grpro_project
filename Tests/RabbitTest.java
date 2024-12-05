@@ -68,7 +68,7 @@ public class RabbitTest {
             }
         }
 
-        //Har tælleren talt 4, har FileReader oversat Carcass rigtig fra fil til verden; der er 4 Rabbit i filen
+        //Har tælleren talt 4, har FileReader oversat Rabbit rigtig fra fil til verden; der er 4 Rabbit i filen
         Assertions.assertTrue(count == 4);
     }
 
@@ -109,6 +109,11 @@ public class RabbitTest {
         Assertions.assertTrue(world.contains(rabbit2));
     }
 
+    @Test //K1-2d. Kaniners alder bestemmer hvor meget energi de har.
+    public void rabbitLosesEnergy() {
+        //wip
+    }
+
     @Test
     public void RabbitMoves() {
         // checker at kaninen bevæger sig
@@ -147,7 +152,7 @@ public class RabbitTest {
     }
 
     @Test
-    public void RabbitAges() {
+    public void rabbitAges() {
         // Her tester vi om Rabbit ældes rigtigt
         world = new World(3);
         Location rabbitlocation = new Location(0, 0);
