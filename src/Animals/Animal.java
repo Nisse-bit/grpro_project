@@ -208,7 +208,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
             world.move(this, l);
             this.adjustEnergy(world, -1); //dyr mister energi
         }
-        if(list.size() == 0){System.out.println("["+ this +"]: No moveable spots available, I'll stand still.");}
+        //if(list.size() == 0){System.out.println("["+ this +"]: No moveable spots available, I'll stand still.");}
     }
 
     /**

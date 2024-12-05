@@ -227,25 +227,37 @@ public class BearTest {
 
         Location StartLocation = world.getLocation(bear);
 
-        bear.adjustEnergy(world,-70);
+        bear.adjustEnergy(world,-50);
 
 
-        while(!rabbittiles.contains((world.getLocation(bear)))) {
+        for(int i = 0; i < 10; i++) {
 
 
-            world.setDay();
-            bear.hunt(world);
+
+            bear.act(world);
             world.step();
-            bear.tryToEat(world);
             rabbit.act(world);
         }
-        Location StopLocation = world.getLocation(bear);
 
-        // burde ikke virkse siden rabbit er i et hul
-        Assertions.assertNotEquals(StartLocation,StopLocation);
+        // burde ikke virke siden rabbit er i et hul
 
 
+        System.out.println(world.getCurrentTime());
 
+        for(int i = 0; i < 10; i++) {
+
+
+
+
+            world.step();
+
+        }
+        world.setDay();
+        rabbit.act(world);
+        bear.act(world);
+
+        Assert.assertFalse(rabbit.getOnMap());
+        // bjørnen burde finde kaninen og spise den
 
     }
 

@@ -124,6 +124,10 @@ public class Bear extends Animal {
                         bush.loseBerries();
                     }
                 }
+            } if (world.getTile(l) instanceof Carcass carcass) {
+                // måske kun spise lidt af den?
+                world.delete(carcass);
+                adjustEnergy(world,30);
             }
         }
         // bjørnen spiser kaniner som kommer tæt på.
@@ -137,39 +141,57 @@ public class Bear extends Animal {
 
     /**
      * Bjørnen jager dyr, når den er sulten,
-     * @param world
+     * @param
      */
+    public Object getTarget(){
+        return target;
+    }
 
     public void hunt(World world) {
         Location preylocation;
 
         if (energy[1] < 81) {  // måske den her if rykkes til act
-            System.out.println("Im hungry as shit lets hunt");
-            Map<Object, Location> entities = world.getEntities();
+
+           // Map<Object, Location> entities = world.getEntities();
 
 
-
-            if (!entities.containsKey(target) || !world.contains(target) || world.getLocation(target) == null) {
-                for (Object object : entities.keySet()) {
-                    if (object instanceof Rabbit rabbit) {
-                       // hvis kaninen er nede i hole, har den ikke en location som bjørnen kan bevæge sig i mod.
-                        if (!rabbit.getOnMap()) {
-                            return;
-                        }
-                        preylocation = entities.get(object);
-
-
-                        //kunne godt tænke mig at den gemmer location, så den jager den samme kanin, og ikke en ny hver gang den her blir kørt
-                        target = object;
-
-                    }
+            List<Rabbit> rabbits = new ArrayList<>();
+            for (Location l : world.getSurroundingTiles(world.getLocation(this), 3)) {
+                Object o = world.getTile(l);
+                if (o instanceof Rabbit rabbit) {
+                    rabbits.add(rabbit);
                 }
-            } else {
-
-
             }
-            this.moveTowards(world, world.getLocation(target));
+            if (rabbits.isEmpty()) {
+                this.moveRandomly(world);
+                return;
+            }
+//Finder den nærmeste kanin, og bevæger sig mod den
+            Rabbit nearestRabbit = rabbits.getFirst();
+            int previous_dX = Integer.MAX_VALUE;
+            int previous_dY = Integer.MAX_VALUE;
 
+            for (Rabbit rabbit : rabbits) {
+                int thisX = world.getLocation(this).getX();
+                int thisY = world.getLocation(this).getY();
+
+                int thatX = world.getLocation(rabbit).getX();
+                int thatY = world.getLocation(rabbit).getY();
+
+                int dX = Math.abs(thisX - thatX);
+                int dY = Math.abs(thisY - thatY);
+
+                boolean betterX = dX <= previous_dX;
+                boolean betterY = dY <= previous_dY;
+
+                if (betterX && betterY) {
+                    nearestRabbit = rabbit;
+                }
+
+                previous_dX = dX;
+                previous_dY = dY;
+            }
+            this.moveTowards(world, world.getLocation(nearestRabbit));
         }
     }
 

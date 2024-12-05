@@ -1,12 +1,17 @@
+import Animals.Carcass;
 import Animals.Rabbit;
 import Holes.Burrow;
 import Holes.WolfDen;
 import Plants.Grass;
+import itumulator.executable.Program;
 import org.junit.Assert;
 import org.junit.jupiter.api.*;
 
 import itumulator.world.Location;
 import itumulator.world.World;
+
+import java.io.FileNotFoundException;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,6 +36,77 @@ public class RabbitTest {
         rabbit = null;
         grass = null;
         burrow = null;
+    }
+
+    @Test //K1-2a. Kaniner kan placeres på kortet når input filerne beskriver dette. Kaniner skal blot tilfældigt placeres.
+    public void placeRabbitFromFile() throws FileNotFoundException {
+        FileReader fr = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\InputFiles\\week-1\\t1-2fg.txt");
+        int size = fr.getWorldSize();
+        Program program = new Program(size, 12, 12);
+        World world = program.getWorld();
+
+        //Placerer alle blocking-entities (Vi tester kun om Rabbit placeres, så NBO'er er ligegyldige)
+        for (Object o : fr.getEntityList()) {
+            Random r = new Random();
+            int x = r.nextInt(size);
+            int y = r.nextInt(size);
+
+            Location l = new Location(x, y);
+            while (!world.isTileEmpty(l)) {
+                x = r.nextInt(size);
+                y = r.nextInt(size);
+                l = new Location(x, y);
+            }
+            world.setTile(l, o);
+        }
+
+        //Tæller antal Rabbit i verdenen
+        int count = 0;
+        for (Object o : world.getEntities().keySet()) {
+            if (o instanceof Rabbit) {
+                count++;
+            }
+        }
+
+        //Har tælleren talt 4, har FileReader oversat Carcass rigtig fra fil til verden; der er 4 Rabbit i filen
+        Assertions.assertTrue(count == 4);
+    }
+
+    @Test //K1-2b. Kaniner kan dø, hvilket resulterer I at de fjernes fra verdenen.
+    public void rabbitDies() {
+        /* Kaninerne kan dø på et par forskellige måder, men uanset hvad "dør" den idet dens die-metode kaldes.
+         * Derfor er det nemt at teste om kaninen dør; vi kører bare die-metoden, og ser hvorvidt kaninen
+         * stadig eksiterer. */
+
+        world.setTile(new Location(0,0), rabbit);
+        rabbit.die(world);
+        Assertions.assertFalse(world.contains(rabbit));
+    }
+
+    @Test //K1-2c. Kaniner lever af græs som de spiser i løbet af dagen, uden mad dør en kanin.
+    public void rabbitLivesOffGrass() {
+        //Uden græs, og uden at kaninen sover om natten, dør den af sult efter 50 steps
+        Rabbit rabbit1 = new Rabbit();
+        world.setTile(new Location(1,1), rabbit1);
+
+        for(int i=0; i < 50; i++){
+            rabbit1.act(world);
+        }
+        Assertions.assertFalse(world.contains(rabbit1));
+
+        //Med græs, lever kaninen længere end 50 steps
+        Rabbit rabbit2 = new Rabbit();
+        world.setTile(new Location(1,1), rabbit2);
+
+        for(int i = 0; i < world.getSize(); i++){
+            for(int j = 0; j < world.getSize(); j++) {
+                world.setTile(new Location(i,j), new Grass());
+            }
+        }
+        for(int i=0; i < 50; i++){
+            rabbit2.act(world);
+        }
+        Assertions.assertTrue(world.contains(rabbit2));
     }
 
     @Test

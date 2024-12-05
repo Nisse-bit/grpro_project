@@ -53,8 +53,7 @@ public class Carcass extends Animal {
 
 
     /**
-     * Hvis ådslen bliver ramt af en spore fra svamp, bliver den infected.
-     *
+     * Hvis ådslet bliver ramt af en spore fra svamp, bliver den infected.
      */
     public void Infect(){
         infected = true;

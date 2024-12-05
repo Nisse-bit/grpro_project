@@ -73,7 +73,7 @@ public class PlantTest {
             }
         }
 
-        //Har tælleren talt 3, har FileReader oversat Grass rigtig fra fil til verden; der er 3 Carcass i filen
+        //Har tælleren talt 3, har FileReader oversat Grass rigtig fra fil til verden; der er 3 Grass i filen
         Assertions.assertTrue(count == 3);
     }
 
@@ -94,7 +94,20 @@ public class PlantTest {
 
     @Test //K1-1c. Dyr kan stå på græs uden der sker noget med græsset.
     public void animalStandOnGrass(){
+        world = new World(3);
+        location = new Location(1,1);
 
+        double count = 0.0;
+        for(int i=0; i < 1_000_000; i++){
+            world.setTile(location, grass);
+            world.setTile(location, rabbit);
+            rabbit.tryToEat(world);
+            if(!world.contains(grass)) { count++; }
+            else{ world.delete(grass); }
+            world.delete(rabbit);
+        }
+
+        Assertions.assertTrue(count/100_000.0 != 1.0);
     }
 
     @Test
@@ -113,6 +126,5 @@ public class PlantTest {
             berrybush.act(world);
         }
         Assertions.assertTrue(berrybush.getFruit(world));
-
     }
 }
