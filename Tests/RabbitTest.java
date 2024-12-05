@@ -13,8 +13,7 @@ import itumulator.world.World;
 import java.io.FileNotFoundException;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RabbitTest {
     World world;
@@ -111,7 +110,18 @@ public class RabbitTest {
 
     @Test //K1-2d. Kaniners alder bestemmer hvor meget energi de har.
     public void rabbitLosesEnergy() {
-        //wip
+        world.setTile(new Location(0,0), rabbit);
+        Assertions.assertTrue(rabbit.getEnergy()[0] == 50);
+
+        for(int i=0; i < 30; i++){
+            rabbit.act(world);
+        }
+        Assertions.assertTrue(30 <= rabbit.getEnergy()[0] && rabbit.getEnergy()[0] <= 40);
+    }
+
+    @Test //K1-2e. Kaniner kan reproducere.
+    public void rabbitReproduces() {
+
     }
 
     @Test

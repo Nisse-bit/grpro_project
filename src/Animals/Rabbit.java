@@ -245,11 +245,40 @@ public class Rabbit extends Animal {
             return null; //Hvis der ikke er en hule i nærheden returneres null
         }
 
+        /**
+         * Returnerer kaninens hule.
+         * @return kaninens hule
+         */
         public Burrow getBurrow(){
             return burrow;
         }
 
+        /**
+         * Returnerer hvorvidt kaninen er i verdenen.
+         * @return hvorvidt kaninen er i verdenen
+         */
         public boolean getOnMap(){
             return onMap;
+        }
+
+        /**
+         * Returnerer kaninens energi.
+         * @return kaninens energi
+         */
+        public int[] getEnergy() {
+            return energy;
+        }
+
+        /**
+         * Sætter kaninens biologiske køn.
+         * @param sex kaninens biologiske køn
+         */
+        public void setSex(String sex) {
+            if(sex.equals("male") || sex.equals("female")){
+                this.sex = sex;
+            }
+            else{
+                throw new IllegalArgumentException("sex must be either \"male\" or \"female\"");
+            }
         }
     }
