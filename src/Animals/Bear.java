@@ -143,16 +143,19 @@ public class Bear extends Animal {
     public void hunt(World world) {
         Location preylocation;
 
-        if (energy[1] < 150) {  // måske den her if rykkes til act
+        if (energy[1] < 81) {  // måske den her if rykkes til act
             System.out.println("Im hungry as shit lets hunt");
             Map<Object, Location> entities = world.getEntities();
 
-            if(world.isNight()){return;} // den kan ikke kører om natte fordi så gemmer kaninerne sig
 
 
             if (!entities.containsKey(target) || !world.contains(target) || world.getLocation(target) == null) {
                 for (Object object : entities.keySet()) {
-                    if (object instanceof Rabbit) {
+                    if (object instanceof Rabbit rabbit) {
+                       // hvis kaninen er nede i hole, har den ikke en location som bjørnen kan bevæge sig i mod.
+                        if (!rabbit.getOnMap()) {
+                            return;
+                        }
                         preylocation = entities.get(object);
 
 

@@ -1,7 +1,11 @@
-15
+17
 bear 1 (5,5)
+bear 1
 wolf 2-4
 wolf 1-2
-rabbit 30
+rabbit 15
 grass 10-15
-berry 20
+berry 10
+carcass fungi 5-10
+carcass 4
+cordyceps rabbit 2

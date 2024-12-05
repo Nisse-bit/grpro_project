@@ -17,7 +17,7 @@ public class Fungus extends Animal {
 
         }
         else if (size.equals("big")) {
-            this.di = new DisplayInformation(Color.yellow, "fungi-large", true);
+            this.di = new DisplayInformation(Color.yellow, "fungi", true);
         }
         else throw new IllegalArgumentException("*** Size must be either \"big\", or \"small\"");
         }

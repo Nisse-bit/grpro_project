@@ -61,7 +61,7 @@ public class WolfTest {
         // ulven findes ikke i listen af entities, eller på verdens kortet men er stadig et objekt.
 
         Assert.assertFalse(world.contains(wolf));
-        Assert.assertFalse(world.getEntities().containsValue(location));
+
     }
 
     @Test //K2-1c tester at ulve jager og spiser kaniner

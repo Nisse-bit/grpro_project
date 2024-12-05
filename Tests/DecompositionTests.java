@@ -62,7 +62,7 @@ public class DecompositionTests {
 
     @Test
     public void placeCarcassFromFile() throws FileNotFoundException {
-        FileReader fr = new FileReader("C:\\Users\\niels\\Documents\\GitHub\\grpro_project\\src\\InputFiles\\inputs_week-3\\week-3\\t3-2ab.txt");
+        FileReader fr = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\InputFiles\\inputs_week-3\\week-3\\t3-2ab.txt");
         int size = fr.getWorldSize();
         Program program = new Program(size, 12, 12);
         World world = program.getWorld();

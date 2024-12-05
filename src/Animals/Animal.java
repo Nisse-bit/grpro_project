@@ -199,7 +199,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * @param world verdenen som dyret er i
      */
     public void moveRandomly(World world){
-        Set<Location> neighbours = world.getEmptySurroundingTiles();
+        Set<Location> neighbours = world.getEmptySurroundingTiles(world.getLocation(this));
         List<Location> list = new ArrayList<>(neighbours);
 
         if (!list.isEmpty()) {
@@ -216,6 +216,11 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * @param world verdenen som dyret er i
      */
     public void die(World world){
+        if(!onMap){
+            world.delete(this);
+            return;
+        }
+
         String carcassSize;
         if(this.di.getImageKey().contains("small")){carcassSize = "small";}
         else if(this.di.getImageKey().contains("rabbit")){carcassSize = "small";}

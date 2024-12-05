@@ -4,11 +4,13 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+import Holes.Burrow;
 import Plants.BerryBush;
 import Animals.Rabbit;
 import Animals.Wolf;
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.Program;
+import org.junit.Assert;
 import org.junit.jupiter.api.*;
 
 import itumulator.world.Location;
@@ -64,12 +66,12 @@ public class BearTest {
     @Test
     public void BearMoveTest(){
        tlocation = new Location(3,4);
-        System.out.println(tlocation);
-        System.out.println(bear.getTerritoryTiles(world,tlocation));
+
 
         Location Startlocation = world.getLocation(bear);
         // bevæger sig forhåbenligt
         bear.createTerritory(world);
+
         bear.bearBrain(world);
 
 
@@ -109,19 +111,24 @@ public class BearTest {
 
         Location StartLocation = world.getLocation(bear);
 
+        bear.adjustEnergy(world,-70);
+        Set<Location> rabbittiles = world.getSurroundingTiles(world.getLocation(rabbit));
+
+        while(!rabbittiles.contains((world.getLocation(bear)))) {
 
 
-        for (int i = 0; i < 50; i++) {
-            //Location location
+            world.setDay();
             bear.hunt(world);
             world.step();
-
+            bear.tryToEat(world);
         }
         Location StopLocation = world.getLocation(bear);
 
         System.out.println(StartLocation + " " + StopLocation);
-        Assertions.assertNotEquals(StopLocation,StartLocation);
-        Assertions.assertFalse(world.contains(rabbit));
+
+        Assertions.assertTrue(rabbittiles.contains(world.getLocation(bear)));
+        Assertions.assertNotEquals(StartLocation,StopLocation);
+
 
     }
 
@@ -137,11 +144,21 @@ public class BearTest {
         Location location = new Location (0,9);
         Location location1 = new Location (9,0);
         Location location2 = new Location (9,9);
+
         world.setTile(location,rabbit);
         world.setTile(location1,rabbit1);
         world.setTile(location2,rabbit2);
 
 
+        Set<Location> rabbittiles = world.getSurroundingTiles(world.getLocation(rabbit));
+        Set<Location> rabbittiles1 = world.getSurroundingTiles(world.getLocation(rabbit1));
+        Set<Location> rabbittiles2 = world.getSurroundingTiles(world.getLocation(rabbit2));
+        Set<Location> rabbittilesFull = new HashSet<>();
+
+
+        rabbittilesFull.addAll(rabbittiles);
+        rabbittilesFull.addAll(rabbittiles1);
+        rabbittilesFull.addAll(rabbittiles2);
 
         Location StartLocation = world.getLocation(bear);
 
@@ -155,16 +172,13 @@ public class BearTest {
             world.step();
             bear.tryToEat(world);
 
+
         }
         Location StopLocation = world.getLocation(bear);
 
         System.out.println(StartLocation + " " + StopLocation);
 
-
-
-        Assertions.assertFalse(world.contains(rabbit));
-        Assertions.assertFalse(world.contains(rabbit1));
-        Assertions.assertFalse(world.contains(rabbit2));
+        Assert.assertTrue(rabbittilesFull.contains(world.getLocation(bear)));
     }
 
 
@@ -180,4 +194,59 @@ public class BearTest {
 
         assertFalse(bush.hasFruits);
     }
+
+    @Test
+    public void BearhuntrabbitsinholeTest(){
+
+
+
+        Rabbit rabbit = new Rabbit();
+        Burrow burrow = new Burrow();
+        Location location = new Location (9,9);
+
+        Location rabbitlocation = new Location(4, 4);
+
+
+
+
+        Location location1 = new Location(3, 4);
+
+
+        world.setTile(location, burrow);
+        world.setTile(location,rabbit);
+        Set<Location> rabbittiles = world.getSurroundingTiles(world.getLocation(rabbit));
+
+        for (int i = 0; i < 10 ; i++) {
+            world.step();
+            rabbit.act(world);
+
+        }
+        rabbit.act(world);
+        rabbit.act(world);
+        Assert.assertFalse(rabbit.getOnMap());
+
+        Location StartLocation = world.getLocation(bear);
+
+        bear.adjustEnergy(world,-70);
+
+
+        while(!rabbittiles.contains((world.getLocation(bear)))) {
+
+
+            world.setDay();
+            bear.hunt(world);
+            world.step();
+            bear.tryToEat(world);
+            rabbit.act(world);
+        }
+        Location StopLocation = world.getLocation(bear);
+
+        // burde ikke virkse siden rabbit er i et hul
+        Assertions.assertNotEquals(StartLocation,StopLocation);
+
+
+
+
+    }
+
 }

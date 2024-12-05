@@ -184,14 +184,16 @@ public class Rabbit extends Animal {
                         if (burrow == null) {
                             burrow = nearestBurrow(world, world.getSize());
                         }
-                        //Hvis kaninen STADIG ikke har en hule, fremtvinger den en
+                        //Hvis kaninen STADIG ikke har en hule, bevæger den sig tilfældigt og stopper metoden
                         if(burrow == null){
-                            Object o = world.getNonBlocking(rLocation);
+                            this.moveRandomly(world);
+                            return;
+                            /*Object o = world.getNonBlocking(rLocation);
                             world.delete(o);
 
                             Burrow b = new Burrow();
                             world.setTile(rLocation, b);
-                            burrow = b; //Kaninen graver en hule og tilknytter sig den
+                            burrow = b; //Kaninen graver en hule og tilknytter sig den*/
                         }
                     }
                     //Nu MÅ kaninen altså have en hule
@@ -241,5 +243,13 @@ public class Rabbit extends Animal {
                 searchRadius++; //Øger radius
             }
             return null; //Hvis der ikke er en hule i nærheden returneres null
+        }
+
+        public Burrow getBurrow(){
+            return burrow;
+        }
+
+        public boolean getOnMap(){
+            return onMap;
         }
     }
