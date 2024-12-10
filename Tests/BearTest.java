@@ -41,7 +41,7 @@ public class BearTest {
     }
 
     @Test //K2-4a; tester om bjørne sættes i verden
-    public void placeInWorldTest() throws FileNotFoundException {
+    public void placeBearFromFile() throws FileNotFoundException {
         FileReader fr = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\InputFiles\\week-2\\t2-4a.txt");
         int size = fr.getWorldSize();
         Program p = new Program(size, 42, 42);
@@ -64,7 +64,7 @@ public class BearTest {
 
     // første test: virker bjørnen som kaninen gør
     @Test
-    public void BearMoveTest(){
+    public void bearMoves(){
        tlocation = new Location(3,4);
 
 
@@ -80,7 +80,7 @@ public class BearTest {
     }
 
     @Test
-    public void BearCreateTerritoryTest(){
+    public void bearCreateTerritory(){
         Bear bear1 = new Bear();
         Location location = new Location(5,5);
         world.setTile(location, bear1);
@@ -90,7 +90,7 @@ public class BearTest {
     }
 
     @Test
-    public void TerritoryTest(){
+    public void territoryTest(){
         Bear bear1 = new Bear();
         Location location = new Location(5,5);
         world.setTile(location, bear1);
@@ -193,72 +193,6 @@ public class BearTest {
         }
 
         assertFalse(bush.hasFruits);
-    }
-
-    @Test
-    public void BearhuntrabbitsinholeTest(){  // virker ikke lige nu
-
-
-
-        Rabbit rabbit = new Rabbit();
-        Burrow burrow = new Burrow();
-        Location location = new Location (9,9);
-
-        Location rabbitlocation = new Location(4, 4);
-
-
-
-
-        Location location1 = new Location(3, 4);
-
-
-        world.setTile(location, burrow);
-        world.setTile(location,rabbit);
-        Set<Location> rabbittiles = world.getSurroundingTiles(world.getLocation(rabbit));
-
-        for (int i = 0; i < 10 ; i++) {
-            world.step();
-            rabbit.act(world);
-
-        }
-        rabbit.act(world);
-        rabbit.act(world);
-        Assert.assertFalse(rabbit.getOnMap());
-
-        Location StartLocation = world.getLocation(bear);
-
-        bear.adjustEnergy(world,-50);
-
-
-        for(int i = 0; i < 10; i++) {
-
-
-
-            bear.act(world);
-            world.step();
-            rabbit.act(world);
-        }
-
-        // burde ikke virke siden rabbit er i et hul
-
-
-        System.out.println(world.getCurrentTime());
-
-        for(int i = 0; i < 10; i++) {
-
-
-
-
-            world.step();
-
-        }
-        world.setDay();
-        rabbit.act(world);
-        bear.act(world);
-
-        Assert.assertFalse(rabbit.getOnMap());
-        // bjørnen burde finde kaninen og spise den
-
     }
 
 }

@@ -1,19 +1,12 @@
 package Plants;
 
 import itumulator.world.NonBlocking;
-import itumulator.world.Location;
 import itumulator.world.World;
-import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.executable.DisplayInformation;
-import itumulator.simulator.Actor;
 
 import java.awt.Color;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class Grass extends Plant implements NonBlocking {
-
 
     //Konstruktør
     public Grass() {
@@ -25,5 +18,4 @@ public class Grass extends Plant implements NonBlocking {
     public void act(World world) {
         tryToSpread(world);
     }
-
 }

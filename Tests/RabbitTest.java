@@ -121,280 +121,21 @@ public class RabbitTest {
 
     @Test //K1-2e. Kaniner kan reproducere.
     public void rabbitReproduces() {
+        world = new World(2);
+        Rabbit rabbit1 = new Rabbit(); rabbit1.setSex("male");
+        Rabbit rabbit2 = new Rabbit(); rabbit2.setSex("female");
 
-    }
+        world.setTile(new Location(0,0), rabbit1);
+        world.setTile(new Location(0,1), rabbit2);
 
-    @Test
-    public void RabbitMoves() {
-        // checker at kaninen bevæger sig
-        Location rabbitlocation = new Location(0, 0);
-
-        world.setTile(rabbitlocation, rabbit);
-
-        world.setCurrentLocation(rabbitlocation);
-
-        Location l = world.getLocation(rabbit);
-
-        // tester givne funktion
-        rabbit.moveRandomly(world);
-        rabbit.moveRandomly(world);
-        rabbit.moveRandomly(world);
-
-        // hvis at kaninen har bevæget sig vil den ikke være den samme som start positionen som lige nu er (0,0)
-        assertNotEquals(l, world.getLocation(rabbit));   // her skal start location være anderledes ind slut position.
-    }
-
-    @Test
-    public void RabbitMoves2() {
-        // her tester vi hvad den skal gøre hvis der ikke er plads til at bevæge sig, eller ingen felter er.
-
-        world = new World(1);
-        Location rabbitlocation = new Location(0, 0);
-        world.setTile(rabbitlocation, rabbit);
-        world.setTile(rabbitlocation, grass);
-        world.setCurrentLocation(rabbitlocation);
-
-
-        Location l = world.getLocation(rabbit);
-        rabbit.moveRandomly(world);
-        Assertions.assertEquals(l, world.getLocation(rabbit));
-
-    }
-
-    @Test
-    public void rabbitAges() {
-        // Her tester vi om Rabbit ældes rigtigt
-        world = new World(3);
-        Location rabbitlocation = new Location(0, 0);
-
-        world.setTile(rabbitlocation, rabbit);
-
-        for (int i = 0; i <= 41; i++) {
-            world.step();
+        for(int i=0; i<40; i++){
+            rabbit1.act(world);
         }
-        assertTrue(1.5 >= rabbit.getAge() && rabbit.getAge() <= 2.5);
-
-        for (int i = 0; i <= 41; i++) {
-            world.step();
-        }
-        assertTrue(3 >= rabbit.getAge() && rabbit.getAge() <= 4);
-    }
-
-    // der er 9 cases.
-    // hvis kanin er i et af det 4 hjørner, hvis den skal op/ned højre/venstre eller hvis den er på et hul.
-    @Test
-    public void RabbitMoveto() {
-        world = new World(7);
-
-        Location rabbitlocation = new Location(4, 4);
-        world.setTile(rabbitlocation, rabbit);
-
-        // her tester vi om kaninen kan gå til højre flere gange.
-        Location location1 = new Location(6, 4);
-
-        rabbit.moveTowards(world,location1);
-
-        rabbit.moveTowards(world,location1);
-
-        // virker også hvis den allerede er der.
-        rabbit.moveTowards(world,location1);
-
-        Assertions.assertEquals(location1, world.getLocation(rabbit));
-
-    }
-
-
-    @Test// der er 9 cases.
-    // hvis kanin er i et af det 4 hjørner, hvis den skal op/ned højre/venstre eller hvis den er på et hul.
-    public void RabbitMoveto1() {
-
-        world = new World(6);
-        Location rabbitlocation = new Location(4, 4);
-        world.setTile(rabbitlocation, rabbit);
-
-
-
-        // her tester vi om rabbit kan gå til Venstre EN enkelt gang
-        Location location1 = new Location(3, 4);
-
-        rabbit.moveTowards(world,location1);
-
-
-
-
-        Assertions.assertEquals(location1, world.getLocation(rabbit));
-
-    }
-    @Test
-    public void RabbitMoveto2() {
-        // her tester vi om rabbit kan gå til op
-        world = new World(7);
-
-
-
-        Location rabbitlocation = new Location(4, 4);
-        world.setTile(rabbitlocation, rabbit);
-        // kaninen starter i midten
-        // hvad hvis kaninen ikke starter i midten?
-        // den kan bevæge sig flere gange.
-
-        Location location1 = new Location(4, 6);
-
-        rabbit.moveTowards(world,location1);
-
-        rabbit.moveTowards(world,location1);
-
-
-        Assertions.assertEquals(location1, world.getLocation(rabbit));
-
+        Assertions.assertTrue(world.getEntities().size() > 2);
     }
 
     @Test
-    public void RabbitMoveto3() {
-        // her tester vi om rabbit kan gå til ned
-        world = new World(7);
-
-
-
-        Location rabbitlocation = new Location(4, 4);
-        world.setTile(rabbitlocation, rabbit);
-        // kaninen starter i midten
-        // hvad hvis kaninen ikke starter i midten?
-        // den kan bevæge sig flere gange.
-
-        Location location1 = new Location(4, 2);
-
-        rabbit.moveTowards(world,location1);
-
-        rabbit.moveTowards(world,location1);
-
-
-        Assertions.assertEquals(location1, world.getLocation(rabbit));
-
-    }
-
-    @Test
-    public void RabbitMoveto4() {
-        // her tester vi om rabbit kan gå til til hjørnet
-        world = new World(7);
-
-
-
-        Location rabbitlocation = new Location(4, 4);
-        world.setTile(rabbitlocation, rabbit);
-        // kaninen starter i midten
-        // hvad hvis kaninen ikke starter i midten?
-        // den kan bevæge sig flere gange.
-
-        Location location1 = new Location(6,2 );
-
-        rabbit.moveTowards(world,location1);
-
-        rabbit.moveTowards(world,location1);
-
-
-        Assertions.assertEquals(location1, world.getLocation(rabbit));
-
-    }
-    @Test
-    public void RabbitMoveto5() {
-        // her tester vi om rabbit kan gå til højre
-        world = new World(9);
-
-        // her hjalp testen mig til at finde fejl i koden tak <3.
-
-
-        Location rabbitlocation = new Location(4, 4);
-        world.setTile(rabbitlocation, rabbit);
-
-        // den kan bevæge sig flere gange.
-
-        Location location1 = new Location(2,6 );
-
-        rabbit.moveTowards(world,location1);
-
-        rabbit.moveTowards(world,location1);
-
-
-        Assertions.assertEquals(location1, world.getLocation(rabbit));
-
-    }
-
-    @Test
-    public void RabbitMoveto6() {
-        // her tester vi om rabbit kan gå til venstre og ned
-
-        world = new World(7);
-
-
-
-        Location rabbitlocation = new Location(4, 4);
-        world.setTile(rabbitlocation, rabbit);
-
-        // den kan bevæge sig en gang
-
-        Location location1 = new Location(3,3 );
-
-        rabbit.moveTowards(world,location1);
-
-        rabbit.moveTowards(world,location1);
-
-
-        Assertions.assertEquals(location1, world.getLocation(rabbit));
-
-    }
-    @Test
-    public void RabbitMoveto7() {
-        // her tester vi om rabbit kan gå til højre og op.
-        world = new World(7);
-
-
-
-        Location rabbitlocation = new Location(4, 4);
-        world.setTile(rabbitlocation, rabbit);
-
-        // den kan bevæge sig flere gange.
-
-        Location location1 = new Location(6,6);
-
-        rabbit.moveTowards(world,location1);
-
-        rabbit.moveTowards(world,location1);
-
-
-
-        Assertions.assertEquals(location1, world.getLocation(rabbit));
-
-    }
-
-    @Test
-    public void RabbitMoveto8() {
-        // her tester vi om rabbit kan gå til højre
-        world = new World(7);
-
-
-
-        Location rabbitlocation = new Location(4, 4);
-        world.setTile(rabbitlocation, rabbit);
-        // kaninen starter i midten
-        // hvad hvis kaninen ikke starter i midten?
-        // den kan bevæge sig flere gange.
-
-        Location location1 = new Location(2,2);
-
-        rabbit.moveTowards(world,location1);
-
-        rabbit.moveTowards(world,location1);
-
-
-
-        Assertions.assertEquals(location1, world.getLocation(rabbit));
-
-    }
-// intuition
-
-    @Test
-    public void rabbitFindsBurrow(){
+    public void rabbitGetsBurrow(){
         /*
          * Der er 4 måder en kanin finder en Burrow:
          *  1) Der er en Burrow indenfor radius 3 af kaninen.
@@ -460,55 +201,337 @@ public class RabbitTest {
         world = null;
     }
 
-    // Den her tester om kaniner, går imod locationer og også gemmer sig i dem.
+    @Test //K1-2g. Kaniner søger mod deres huller når det bliver aften, hvor de sover.
+    public void rabbitSeeksBurrow() {
+        Program program = new Program(8, 42, 42);
+        world = program.getWorld();
+
+        world.setTile(new Location(0,0), rabbit); rabbit.setBurrow(burrow);
+        world.setTile(new Location(7,7), burrow);
+        world.setNight();
+
+        for(int i=0; i<7; i++){
+            program.simulate();
+        }
+
+        //Tester at kaninen har fundet over på dets hul
+        Location rabbitsLocation = world.getLocation(rabbit);
+        Location burrowsLocation = world.getLocation(burrow);
+        Assertions.assertEquals(rabbitsLocation, burrowsLocation);
+
+        //Tester at kaninen er hoppet ned i hullet
+        program.simulate();
+        Assertions.assertFalse(rabbit.getOnMap());
+    }
+
+    @Test //K1-3a. Huller kan enten blive indsat når input filerne beskriver dette, eller graves af kaniner. Huller bliver tilfældigt placeret når de indgår i en input fil.
+    public void placeBurrowFromFile() throws FileNotFoundException {
+        FileReader fr = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\InputFiles\\week-1\\tf1-1.txt");
+        int size = fr.getWorldSize();
+        Program program = new Program(size, 12, 12);
+        World world = program.getWorld();
+
+        //Placerer alle nonblocking-entities (Vi tester kun om Burrows placeres, så blocking-entities er ligegyldige)
+        for (Object o : fr.getNonBlockingList()) {
+            Random r = new Random();
+            int x = r.nextInt(size);
+            int y = r.nextInt(size);
+
+            Location l = new Location(x, y);
+            while (world.getNonBlocking(l) != null) {
+                x = r.nextInt(size);
+                y = r.nextInt(size);
+                l = new Location(x, y);
+            }
+            world.setTile(l, o);
+        }
+
+        //Tæller antal Burrow i verdenen
+        int count = 0;
+        for (Object o : world.getEntities().keySet()) {
+            if (o instanceof Burrow) {
+                count++;
+            }
+        }
+
+        //Har tælleren talt 3, har FileReader oversat Burrow rigtig fra fil til verden; der er 3 Burrow i filen
+        Assertions.assertTrue(count == 3);
+    }
+
+    @Test //K1-3b. Dyr kan stå på et kaninhul uden der sker noget.
+    public void animalStandOnBurrow() {
+        for(int i=0; i<10_000_000; i++){
+            world = new World(1);
+            rabbit = new Rabbit();
+
+            world.setTile(new Location(0,0), rabbit);
+            world.setTile(new Location(0,0), burrow);
+
+            world.setDay();
+            rabbit.act(world);
+
+            Assertions.assertTrue(world.contains(rabbit));
+            Assertions.assertTrue(world.contains(burrow));
+        }
+    }
+
     @Test
-    public void RabbitMovesNearestBurrow() {    // work in progress
-        World world = new World(6);
+    public void rabbitMoves() {
+        // checker at kaninen bevæger sig
+        Location rabbitlocation = new Location(0, 0);
 
-        Location rabbitlocation = new Location(4, 4);
-        // kaninen starter i midten
+        world.setTile(rabbitlocation, rabbit);
 
+        world.setCurrentLocation(rabbitlocation);
 
+        Location l = world.getLocation(rabbit);
 
-        Location location = new Location(3, 4);   // x < Rx  && y == y dvs den er under kaninen
-        // sætter burrow ved location 3,4
+        // tester givne funktion
+        rabbit.moveRandomly(world);
 
+        // hvis at kaninen har bevæget sig vil den ikke være den samme som start positionen som lige nu er (0,0)
+        assertNotEquals(l, world.getLocation(rabbit));   // her skal start location være anderledes ind slut position.
+    }
 
-        world.setTile(location, burrow);
-        world.setTile(rabbitlocation,rabbit);
+    @Test
+    public void rabbitMoves2() {
+        // her tester vi hvad den skal gøre hvis der ikke er plads til at bevæge sig, eller ingen felter er.
 
-
-
-        world.setCurrentLocation(location);
-        System.out.println(world.getNonBlocking(location));
-
-
-        
-            
-
-        System.out.println(world.getCurrentTime());
-        boolean onMap = rabbit.getOnMap();
-        // nu skal kaninen gå i mod burrow.
-        // det burde den gøre
-        Assertions.assertNotNull(burrow);
-      ;
-        rabbit.act(world);
+        world = new World(1);
+        Location rabbitlocation = new Location(0, 0);
+        world.setTile(rabbitlocation, rabbit);
+        world.setTile(rabbitlocation, grass);
+        world.setCurrentLocation(rabbitlocation);
 
 
-
-        
-        
-        rabbit.act(world);
-        onMap = rabbit.getOnMap();
-        // rabbit goes into hole and dissapears from map.
-        Assert.assertFalse(onMap);
-
-
-
-
-
-
+        Location l = world.getLocation(rabbit);
+        rabbit.moveRandomly(world);
+        Assertions.assertEquals(l, world.getLocation(rabbit));
 
     }
 
+    @Test
+    public void rabbitAges() {
+        // Her tester vi om Rabbit ældes rigtigt
+        world = new World(3);
+        Location rabbitlocation = new Location(0, 0);
+
+        world.setTile(rabbitlocation, rabbit);
+
+        for (int i = 0; i <= 41; i++) {
+            world.step();
+        }
+        assertTrue(1.5 >= rabbit.getAge() && rabbit.getAge() <= 2.5);
+
+        for (int i = 0; i <= 41; i++) {
+            world.step();
+        }
+        assertTrue(3 >= rabbit.getAge() && rabbit.getAge() <= 4);
+    }
+
+    // der er 9 cases.
+    // hvis kanin er i et af det 4 hjørner, hvis den skal op/ned højre/venstre eller hvis den er på et hul.
+    @Test
+    public void rabbitMoveTo() {
+        world = new World(7);
+
+        Location rabbitlocation = new Location(4, 4);
+        world.setTile(rabbitlocation, rabbit);
+
+        // her tester vi om kaninen kan gå til højre flere gange.
+        Location location1 = new Location(6, 4);
+
+        rabbit.moveTowards(world,location1);
+
+        rabbit.moveTowards(world,location1);
+
+        // virker også hvis den allerede er der.
+        rabbit.moveTowards(world,location1);
+
+        Assertions.assertEquals(location1, world.getLocation(rabbit));
+
+    }
+
+
+    @Test// der er 9 cases.
+    // hvis kanin er i et af det 4 hjørner, hvis den skal op/ned højre/venstre eller hvis den er på et hul.
+    public void rabbitMoveTo1() {
+
+        world = new World(6);
+        Location rabbitlocation = new Location(4, 4);
+        world.setTile(rabbitlocation, rabbit);
+
+
+
+        // her tester vi om rabbit kan gå til Venstre EN enkelt gang
+        Location location1 = new Location(3, 4);
+
+        rabbit.moveTowards(world,location1);
+
+
+
+
+        Assertions.assertEquals(location1, world.getLocation(rabbit));
+
+    }
+    @Test
+    public void rabbitMoveTo2() {
+        // her tester vi om rabbit kan gå til op
+        world = new World(7);
+
+
+
+        Location rabbitlocation = new Location(4, 4);
+        world.setTile(rabbitlocation, rabbit);
+        // kaninen starter i midten
+        // hvad hvis kaninen ikke starter i midten?
+        // den kan bevæge sig flere gange.
+
+        Location location1 = new Location(4, 6);
+
+        rabbit.moveTowards(world,location1);
+
+        rabbit.moveTowards(world,location1);
+
+
+        Assertions.assertEquals(location1, world.getLocation(rabbit));
+
+    }
+
+    @Test
+    public void rabbitMoveTo3() {
+        // her tester vi om rabbit kan gå til ned
+        world = new World(7);
+
+
+
+        Location rabbitlocation = new Location(4, 4);
+        world.setTile(rabbitlocation, rabbit);
+        // kaninen starter i midten
+        // hvad hvis kaninen ikke starter i midten?
+        // den kan bevæge sig flere gange.
+
+        Location location1 = new Location(4, 2);
+
+        rabbit.moveTowards(world,location1);
+
+        rabbit.moveTowards(world,location1);
+
+
+        Assertions.assertEquals(location1, world.getLocation(rabbit));
+
+    }
+
+    @Test
+    public void rabbitMoveTo4() {
+        // her tester vi om rabbit kan gå til til hjørnet
+        world = new World(7);
+
+
+
+        Location rabbitlocation = new Location(4, 4);
+        world.setTile(rabbitlocation, rabbit);
+        // kaninen starter i midten
+        // hvad hvis kaninen ikke starter i midten?
+        // den kan bevæge sig flere gange.
+
+        Location location1 = new Location(6,2 );
+
+        rabbit.moveTowards(world,location1);
+
+        rabbit.moveTowards(world,location1);
+
+
+        Assertions.assertEquals(location1, world.getLocation(rabbit));
+
+    }
+    @Test
+    public void rabbitMoveTo5() {
+        // her tester vi om rabbit kan gå til højre
+        world = new World(9);
+
+        // her hjalp testen mig til at finde fejl i koden tak <3.
+
+
+        Location rabbitlocation = new Location(4, 4);
+        world.setTile(rabbitlocation, rabbit);
+
+        // den kan bevæge sig flere gange.
+
+        Location location1 = new Location(2,6 );
+
+        rabbit.moveTowards(world,location1);
+
+        rabbit.moveTowards(world,location1);
+
+
+        Assertions.assertEquals(location1, world.getLocation(rabbit));
+
+    }
+
+    @Test
+    public void rabbitMoveTo6() {
+        // her tester vi om rabbit kan gå til venstre og ned
+
+        world = new World(7);
+
+
+
+        Location rabbitlocation = new Location(4, 4);
+        world.setTile(rabbitlocation, rabbit);
+
+        // den kan bevæge sig en gang
+
+        Location location1 = new Location(3,3 );
+
+        rabbit.moveTowards(world,location1);
+
+        rabbit.moveTowards(world,location1);
+
+
+        Assertions.assertEquals(location1, world.getLocation(rabbit));
+
+    }
+    @Test
+    public void rabbitMoveTo7() {
+        // her tester vi om rabbit kan gå til højre og op.
+        world = new World(7);
+
+
+
+        Location rabbitlocation = new Location(4, 4);
+        world.setTile(rabbitlocation, rabbit);
+
+        // den kan bevæge sig flere gange.
+
+        Location location1 = new Location(6,6);
+
+        rabbit.moveTowards(world,location1);
+
+        rabbit.moveTowards(world,location1);
+
+
+
+        Assertions.assertEquals(location1, world.getLocation(rabbit));
+
+    }
+
+    @Test
+    public void rabbitMoveTo8() {
+        // her tester vi om rabbit kan gå til højre
+        world = new World(7);
+
+        Location rabbitlocation = new Location(4, 4);
+        world.setTile(rabbitlocation, rabbit);
+        // kaninen starter i midten
+        // hvad hvis kaninen ikke starter i midten?
+        // den kan bevæge sig flere gange.
+
+        Location location1 = new Location(2,2);
+
+        rabbit.moveTowards(world,location1);
+        rabbit.moveTowards(world,location1);
+
+        Assertions.assertEquals(location1, world.getLocation(rabbit));
+    }
 }

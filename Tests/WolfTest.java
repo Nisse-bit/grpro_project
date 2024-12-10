@@ -49,7 +49,7 @@ public class WolfTest {
     }
 
     @Test  //K2-1b tester ulvens dø funktion
-    public void Wolfsdying() {
+    public void wolfDies() {
         Wolf wolf = new Wolf(123);
 
         Location location = new Location(5,6);
@@ -65,7 +65,7 @@ public class WolfTest {
     }
 
     @Test //K2-1c tester at ulve jager og spiser kaniner
-    public void huntTest() {
+    public void wolfHunts() {
         Program program = new Program(4,42,42);
         World world = program.getWorld();
 
@@ -86,7 +86,7 @@ public class WolfTest {
 
     //K2-2a, tester ulve er flokdyr. Betaerne søger konstant mod flokkens alfa
     @Test
-    public void WolfPackzTest() {
+    public void wolvesMoveInPack() {
         Program program = new Program(7,42,42);
         World world = program.getWorld();
 
@@ -113,27 +113,25 @@ public class WolfTest {
     //k2-3a Ulve og deres flok tilhørere en ulvehule, her formerere de sig - de graver selv deres hul
     // hvis bare de også gravede deres egne tests.
 
-    @Test   // Alpha ulven spawner med dens Wolfden nå den bliver sat ind på verdenen
-    public void WolfMakesDenTest() throws FileNotFoundException {
+    @Test //Flokken spawner med dens WolfDen når den bliver sat ind på verdenen
+    public void wolfPackHasDen() throws FileNotFoundException {
         FileReader fr = new FileReader("C:\\Users\\niels\\OneDrive\\Skrivebord\\GRPRO Eksamens projekt\\grpro_project\\src\\InputFiles\\week-2\\t2-1ab.txt");
         int size = fr.getWorldSize();
         Program p = new Program(size, 42, 42);
         World w = p.getWorld();
 
-        Wolf wolf1 = (Wolf) fr.getEntityList().getFirst();
-        WolfDen den = (WolfDen) fr.getNonBlockingList().getFirst();
+        Object wolf = fr.getEntityList().getFirst();
+        Object den = fr.getNonBlockingList().getFirst();
 
-        Location l = new Location(2, 2);
-        Location l2 = new Location(2,3);
+        Location l1 = new Location(2,2);
+        Location l2 = new Location(2,2);
 
         //Sæt ulven ind i verden
-        w.setCurrentLocation(l);
-        w.setTile(l, wolf1);
+        w.setCurrentLocation(l1);
+        w.setTile(l1, wolf);
         w.setTile(l2, den);
         //Object den = w.getNonBlocking(l);
-        Assert.assertTrue(den instanceof WolfDen);
-        assertTrue(w.contains(den) && w.contains(wolf1));
+        Assertions.assertTrue(den instanceof WolfDen);
+        assertTrue(w.contains(den) && w.contains(wolf));
     }
-
-
 }

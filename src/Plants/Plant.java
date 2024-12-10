@@ -26,7 +26,7 @@ abstract class Plant implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Planter har 2% sandsynlighed for at sprede sig.
+     * Planter har 4% sandsynlighed for at sprede sig.
      * @param world verdenen som planten er i
      */
     public void tryToSpread(World world) {

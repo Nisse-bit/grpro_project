@@ -1,10 +1,8 @@
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
-
 import java.io.FileNotFoundException;
 import java.util.Random;
-
 import Holes.Hole;
 import Plants.BerryBush;
 
@@ -16,6 +14,7 @@ public class Main {
         int size = fReader.getWorldSize();
         int delay = 100;
         int display_size = 1200;
+
         Program p = new Program(size, display_size, delay);
         World w = p.getWorld();
         //---------------*----------------

@@ -11,7 +11,6 @@ public class Bear extends Animal {
     public Location territory;
     protected Set<Location> territorytiles;
     protected Object target;
-    protected Location plocation; // target location p for prey
 
     //Konstruktører
     //uden territorie

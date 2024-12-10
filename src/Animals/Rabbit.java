@@ -245,40 +245,48 @@ public class Rabbit extends Animal {
             return null; //Hvis der ikke er en hule i nærheden returneres null
         }
 
-        /**
-         * Returnerer kaninens hule.
-         * @return kaninens hule
-         */
-        public Burrow getBurrow(){
-            return burrow;
-        }
+    /**
+     * Returnerer kaninens hule.
+     * @return kaninens hule
+     */
+    public Burrow getBurrow(){
+        return burrow;
+    }
 
-        /**
-         * Returnerer hvorvidt kaninen er i verdenen.
-         * @return hvorvidt kaninen er i verdenen
-         */
-        public boolean getOnMap(){
-            return onMap;
-        }
+    /**
+     * Sætter kaninens hule til en bestemt hule.
+     * @param burrow hulen som kaninens hule sættes til
+     */
+    public void setBurrow(Burrow burrow) {
+        this.burrow = burrow;
+    }
 
-        /**
-         * Returnerer kaninens energi.
-         * @return kaninens energi
-         */
-        public int[] getEnergy() {
-            return energy;
-        }
+    /**
+     * Returnerer hvorvidt kaninen er i verdenen.
+     * @return hvorvidt kaninen er i verdenen
+     */
+    public boolean getOnMap(){
+        return onMap;
+    }
 
-        /**
-         * Sætter kaninens biologiske køn.
-         * @param sex kaninens biologiske køn
-         */
-        public void setSex(String sex) {
-            if(sex.equals("male") || sex.equals("female")){
-                this.sex = sex;
-            }
-            else{
-                throw new IllegalArgumentException("sex must be either \"male\" or \"female\"");
-            }
+    /**
+     * Returnerer kaninens energi.
+     * @return kaninens energi
+     */
+    public int[] getEnergy() {
+        return energy;
+    }
+
+    /**
+     * Sætter kaninens biologiske køn.
+     * @param sex kaninens biologiske køn
+     */
+    public void setSex(String sex) {
+        if(sex.equals("male") || sex.equals("female")){
+            this.sex = sex;
+        }
+        else{
+            throw new IllegalArgumentException("sex must be either \"male\" or \"female\"");
         }
     }
+}
